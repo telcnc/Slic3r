@@ -1,4 +1,4 @@
-package Slic3r::GUI::Plater;
+﻿package Slic3r::GUI::Plater;
 use strict;
 use warnings;
 use utf8;
@@ -91,7 +91,7 @@ sub new {
     # Initialize 3D plater
     if ($Slic3r::GUI::have_OpenGL) {
         $self->{canvas3D} = Slic3r::GUI::Plater::3D->new($self->{preview_notebook}, $self->{objects}, $self->{model}, $self->{config});
-        $self->{preview_notebook}->AddPage($self->{canvas3D}, '3D');
+        $self->{preview_notebook}->AddPage($self->{canvas3D}, '立体视图');
         $self->{canvas3D}->set_on_select_object($on_select_object);
         $self->{canvas3D}->set_on_double_click($on_double_click);
         $self->{canvas3D}->set_on_right_click(sub { $on_right_click->($self->{canvas3D}, @_); });
@@ -103,7 +103,7 @@ sub new {
     
     # Initialize 2D preview canvas
     $self->{canvas} = Slic3r::GUI::Plater::2D->new($self->{preview_notebook}, wxDefaultSize, $self->{objects}, $self->{model}, $self->{config});
-    $self->{preview_notebook}->AddPage($self->{canvas}, '2D');
+    $self->{preview_notebook}->AddPage($self->{canvas}, '平面视图');
     $self->{canvas}->on_select_object($on_select_object);
     $self->{canvas}->on_double_click($on_double_click);
     $self->{canvas}->on_right_click(sub { $on_right_click->($self->{canvas}, @_); });
@@ -115,14 +115,14 @@ sub new {
         $self->{preview3D}->canvas->on_viewport_changed(sub {
             $self->{canvas3D}->set_viewport_from_scene($self->{preview3D}->canvas);
         });
-        $self->{preview_notebook}->AddPage($self->{preview3D}, 'Preview');
+        $self->{preview_notebook}->AddPage($self->{preview3D}, '打印预览');
         $self->{preview3D_page_idx} = $self->{preview_notebook}->GetPageCount-1;
     }
     
     # Initialize toolpaths preview
     if ($Slic3r::GUI::have_OpenGL) {
         $self->{toolpaths2D} = Slic3r::GUI::Plater::2DToolpaths->new($self->{preview_notebook}, $self->{print});
-        $self->{preview_notebook}->AddPage($self->{toolpaths2D}, 'Layers');
+        $self->{preview_notebook}->AddPage($self->{toolpaths2D}, '切片预览');
     }
     
     EVT_NOTEBOOK_PAGE_CHANGED($self, $self->{preview_notebook}, sub {
@@ -135,35 +135,35 @@ sub new {
     if (!&Wx::wxMSW) {
         Wx::ToolTip::Enable(1);
         $self->{htoolbar} = Wx::ToolBar->new($self, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL | wxTB_TEXT | wxBORDER_SIMPLE | wxTAB_TRAVERSAL);
-        $self->{htoolbar}->AddTool(TB_ADD, "Add…", Wx::Bitmap->new("$Slic3r::var/brick_add.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_REMOVE, "Delete", Wx::Bitmap->new("$Slic3r::var/brick_delete.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_RESET, "Delete All", Wx::Bitmap->new("$Slic3r::var/cross.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_ARRANGE, "Arrange", Wx::Bitmap->new("$Slic3r::var/bricks.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_ADD, "增加模型…", Wx::Bitmap->new("$Slic3r::var/brick_add.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_REMOVE, "删除模型", Wx::Bitmap->new("$Slic3r::var/brick_delete.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_RESET, "全部删除", Wx::Bitmap->new("$Slic3r::var/cross.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_ARRANGE, "版面整理", Wx::Bitmap->new("$Slic3r::var/bricks.png", wxBITMAP_TYPE_PNG), '');
         $self->{htoolbar}->AddSeparator;
-        $self->{htoolbar}->AddTool(TB_MORE, "More", Wx::Bitmap->new("$Slic3r::var/add.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_FEWER, "Fewer", Wx::Bitmap->new("$Slic3r::var/delete.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_MORE, "增加拷贝", Wx::Bitmap->new("$Slic3r::var/add.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_FEWER, "删减拷贝", Wx::Bitmap->new("$Slic3r::var/delete.png", wxBITMAP_TYPE_PNG), '');
         $self->{htoolbar}->AddSeparator;
-        $self->{htoolbar}->AddTool(TB_45CCW, "45° ccw", Wx::Bitmap->new("$Slic3r::var/arrow_rotate_anticlockwise.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_45CW, "45° cw", Wx::Bitmap->new("$Slic3r::var/arrow_rotate_clockwise.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_SCALE, "Scale…", Wx::Bitmap->new("$Slic3r::var/arrow_out.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_SPLIT, "Split", Wx::Bitmap->new("$Slic3r::var/shape_ungroup.png", wxBITMAP_TYPE_PNG), '');
-        $self->{htoolbar}->AddTool(TB_CUT, "Cut…", Wx::Bitmap->new("$Slic3r::var/package.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_45CCW, "正转45°", Wx::Bitmap->new("$Slic3r::var/arrow_rotate_anticlockwise.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_45CW, "反转45°", Wx::Bitmap->new("$Slic3r::var/arrow_rotate_clockwise.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_SCALE, "缩放", Wx::Bitmap->new("$Slic3r::var/arrow_out.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_SPLIT, "分裂", Wx::Bitmap->new("$Slic3r::var/shape_ungroup.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_CUT, "切分", Wx::Bitmap->new("$Slic3r::var/package.png", wxBITMAP_TYPE_PNG), '');
         $self->{htoolbar}->AddSeparator;
-        $self->{htoolbar}->AddTool(TB_SETTINGS, "Settings…", Wx::Bitmap->new("$Slic3r::var/cog.png", wxBITMAP_TYPE_PNG), '');
+        $self->{htoolbar}->AddTool(TB_SETTINGS, "设置", Wx::Bitmap->new("$Slic3r::var/cog.png", wxBITMAP_TYPE_PNG), '');
     } else {
         my %tbar_buttons = (
-            add             => "Add…",
-            remove          => "Delete",
-            reset           => "Delete All",
-            arrange         => "Arrange",
+            add             => "增加模型",
+            remove          => "删除模型",
+            reset           => "全部删除",
+            arrange         => "版面整理",
             increase        => "",
             decrease        => "",
             rotate45ccw     => "",
             rotate45cw      => "",
-            changescale     => "Scale…",
-            split           => "Split",
-            cut             => "Cut…",
-            settings        => "Settings…",
+            changescale     => "缩放",
+            split           => "分裂",
+            cut             => "切分",
+            settings        => "设置",
         );
         $self->{btoolbar} = Wx::BoxSizer->new(wxHORIZONTAL);
         for (qw(add remove reset arrange increase decrease rotate45ccw rotate45cw changescale split cut settings)) {
@@ -174,9 +174,9 @@ sub new {
 
     $self->{list} = Wx::ListView->new($self, -1, wxDefaultPosition, wxDefaultSize,
         wxLC_SINGLE_SEL | wxLC_REPORT | wxBORDER_SUNKEN | wxTAB_TRAVERSAL | wxWANTS_CHARS );
-    $self->{list}->InsertColumn(0, "Name", wxLIST_FORMAT_LEFT, 145);
-    $self->{list}->InsertColumn(1, "Copies", wxLIST_FORMAT_CENTER, 45);
-    $self->{list}->InsertColumn(2, "Scale", wxLIST_FORMAT_CENTER, wxLIST_AUTOSIZE_USEHEADER);
+    $self->{list}->InsertColumn(0, "名称", wxLIST_FORMAT_LEFT, 145);
+    $self->{list}->InsertColumn(1, "副本", wxLIST_FORMAT_CENTER, 45);
+    $self->{list}->InsertColumn(2, "缩放", wxLIST_FORMAT_CENTER, wxLIST_AUTOSIZE_USEHEADER);
     EVT_LIST_ITEM_SELECTED($self, $self->{list}, \&list_item_selected);
     EVT_LIST_ITEM_DESELECTED($self, $self->{list}, \&list_item_deselected);
     EVT_LIST_ITEM_ACTIVATED($self, $self->{list}, \&list_item_activated);
@@ -190,9 +190,9 @@ sub new {
     });
     
     # right pane buttons
-    $self->{btn_export_gcode} = Wx::Button->new($self, -1, "Export G-code…", wxDefaultPosition, [-1, 30], wxBU_LEFT);
-    $self->{btn_send_gcode} = Wx::Button->new($self, -1, "Send to printer", wxDefaultPosition, [-1, 30], wxBU_LEFT);
-    $self->{btn_export_stl} = Wx::Button->new($self, -1, "Export STL…", wxDefaultPosition, [-1, 30], wxBU_LEFT);
+    $self->{btn_export_gcode} = Wx::Button->new($self, -1, " 导出G3代码…", wxDefaultPosition, [-1, 30], wxBU_LEFT);
+    $self->{btn_send_gcode} = Wx::Button->new($self, -1, " 发送到打印机", wxDefaultPosition, [-1, 30], wxBU_LEFT);
+    $self->{btn_export_stl} = Wx::Button->new($self, -1, " 导出STL文件", wxDefaultPosition, [-1, 30], wxBU_LEFT);
     #$self->{btn_export_gcode}->SetFont($Slic3r::GUI::small_font);
     #$self->{btn_export_stl}->SetFont($Slic3r::GUI::small_font);
     $self->{btn_send_gcode}->Hide;
@@ -320,9 +320,9 @@ sub new {
             $presets->AddGrowableCol(1, 1);
             $presets->SetFlexibleDirection(wxHORIZONTAL);
             my %group_labels = (
-                print       => 'Print settings',
-                filament    => 'Filament',
-                printer     => 'Printer',
+                print       => '切片配置',
+                filament    => '耗材配置',
+                printer     => '打印机配置',
             );
             $self->{preset_choosers} = {};
             for my $group (qw(print filament printer)) {
@@ -349,11 +349,11 @@ sub new {
             $object_info_sizer->Add($grid_sizer, 0, wxEXPAND);
             
             my @info = (
-                size        => "Size",
-                volume      => "Volume",
-                facets      => "Facets",
-                materials   => "Materials",
-                manifold    => "Manifold",
+                size        => "尺寸",
+                volume      => "体积",
+                facets      => "表面",
+                materials   => "材料",
+                manifold    => "缺陷",
             );
             while (my $field = shift @info) {
                 my $label = shift @info;
@@ -469,7 +469,7 @@ sub load_file {
     $Slic3r::GUI::Settings->{recent}{skein_directory} = dirname($input_file);
     wxTheApp->save_settings;
     
-    my $process_dialog = Wx::ProgressDialog->new('Loading…', "Processing input file…", 100, $self, 0);
+    my $process_dialog = Wx::ProgressDialog->new('加载…', "正在处理加载文件…", 100, $self, 0);
     $process_dialog->Pulse;
     
     local $SIG{__WARN__} = Slic3r::GUI::warning_catcher($self);
@@ -479,7 +479,7 @@ sub load_file {
     
     if (defined $model) {
         $self->load_model_objects(@{$model->objects});
-        $self->statusbar->SetStatusText("Loaded " . basename($input_file));
+        $self->statusbar->SetStatusText("加载" . basename($input_file));
     }
     
     $process_dialog->Destroy;
@@ -667,7 +667,7 @@ sub set_number_of_copies {
     my $model_object = $self->{model}->objects->[$obj_idx];
     
     # prompt user
-    my $copies = Wx::GetNumberFromUser("", "Enter the number of copies of the selected object:", "Copies", $model_object->instances_count, 0, 1000, $self);
+    my $copies = Wx::GetNumberFromUser("", "输入选定对象的副本数：", "拷贝", $model_object->instances_count, 0, 1000, $self);
     my $diff = $copies - $model_object->instances_count;
     if ($diff == 0) {
         # no variation
@@ -696,7 +696,7 @@ sub rotate {
     
     if (!defined $angle) {
         my $axis_name = $axis == X ? 'X' : $axis == Y ? 'Y' : 'Z';
-        $angle = Wx::GetNumberFromUser("", "Enter the rotation angle:", "Rotate around $axis_name axis", $model_instance->rotation, -364, 364, $self);
+        $angle = Wx::GetNumberFromUser("", "请输入旋转角度:", "围绕 $axis_name 轴旋转", $model_instance->rotation, -364, 364, $self);
         return if !$angle || $angle == -1;
         $angle = 0 - $angle;  # rotate clockwise (be consistent with button icon)
     }
@@ -775,7 +775,7 @@ sub changescale {
     
     if (defined $axis) {
         my $axis_name = $axis == X ? 'X' : $axis == Y ? 'Y' : 'Z';
-        my $scale = Wx::GetNumberFromUser("", "Enter the scale % for the selected object:", "Scale along $axis_name", 100, 0, 100000, $self);
+        my $scale = Wx::GetNumberFromUser("", "输入缩放百分比对于选择的对象:", "围绕 $axis_name", 100, 0, 100000, $self);
         return if !$scale || $scale < 0;
         
         # apply Z rotation before scaling
@@ -791,7 +791,7 @@ sub changescale {
         $self->make_thumbnail($obj_idx);
     } else {
         # max scale factor should be above 2540 to allow importing files exported in inches
-        my $scale = Wx::GetNumberFromUser("", "Enter the scale % for the selected object:", 'Scale', $model_instance->scaling_factor*100, 0, 100000, $self);
+        my $scale = Wx::GetNumberFromUser("", "输入整体缩放百分比对于选择的对象:", '缩放', $model_instance->scaling_factor*100, 0, 100000, $self);
         return if !$scale || $scale < 0;
     
         $self->{list}->SetItem($obj_idx, 2, "$scale%");
@@ -842,7 +842,7 @@ sub split_object {
     my $current_model_object = $new_model->get_object($obj_idx);
     
     if ($current_model_object->volumes_count > 1) {
-        Slic3r::GUI::warning_catcher($self)->("The selected object can't be split because it contains more than one volume/material.");
+        Slic3r::GUI::warning_catcher($self)->("选择的对象不能分裂，因为它包含一个以上的体积/材料。");
         return;
     }
     
@@ -851,7 +851,7 @@ sub split_object {
     my @model_objects = @{$current_model_object->split_object};
     if (@model_objects == 1) {
         $self->resume_background_process;
-        Slic3r::GUI::warning_catcher($self)->("The selected object couldn't be split because it contains only one part.");
+        Slic3r::GUI::warning_catcher($self)->("选择的对象不能分裂，因为它只包含一个零部件。");
         $self->resume_background_process;
         return;
     }
@@ -1009,7 +1009,7 @@ sub export_gcode {
     return if !@{$self->{objects}};
     
     if ($self->{export_gcode_output_file}) {
-        Wx::MessageDialog->new($self, "Another export job is currently running.", 'Error', wxOK | wxICON_ERROR)->ShowModal;
+        Wx::MessageDialog->new($self, "另一个导出正在运行。", '错误', wxOK | wxICON_ERROR)->ShowModal;
         return;
     }
     
@@ -1040,7 +1040,7 @@ sub export_gcode {
         $self->{export_gcode_output_file} = $self->{print}->expanded_output_filepath($output_file);
     } else {
         my $default_output_file = $self->{print}->expanded_output_filepath($main::opt{output});
-        my $dlg = Wx::FileDialog->new($self, 'Save G-code file as:', wxTheApp->output_path(dirname($default_output_file)),
+        my $dlg = Wx::FileDialog->new($self, '保存G代码到:', wxTheApp->output_path(dirname($default_output_file)),
             basename($default_output_file), &Slic3r::GUI::FILE_WILDCARDS->{gcode}, wxFD_SAVE);
         if ($dlg->ShowModal != wxID_OK) {
             $dlg->Destroy;
@@ -1058,7 +1058,7 @@ sub export_gcode {
     if ($Slic3r::have_threads) {
         $self->statusbar->SetCancelCallback(sub {
             $self->stop_background_process;
-            $self->statusbar->SetStatusText("Export cancelled");
+            $self->statusbar->SetStatusText("取消导出");
             $self->{export_gcode_output_file} = undef;
             $self->{send_gcode_file} = undef;
             
@@ -1092,7 +1092,7 @@ sub on_process_completed {
     $self->statusbar->StopBusy;
     $self->statusbar->SetStatusText($error // "");
     
-    Slic3r::debugf "Background processing completed.\n";
+    Slic3r::debugf "后台处理完成。\n";
     $self->{process_thread}->detach if $self->{process_thread};
     $self->{process_thread} = undef;
     
@@ -1119,7 +1119,7 @@ sub on_process_completed {
             }
             Slic3r::thread_cleanup();
         });
-        Slic3r::debugf "Background G-code export started.\n";
+        Slic3r::debugf "开始后台导出G代码\n";
     }
 }
 
@@ -1147,13 +1147,13 @@ sub on_export_completed {
     my $send_gcode = 0;
     if ($result) {
         if ($self->{send_gcode_file}) {
-            $message = "Sending G-code file to the OctoPrint server...";
+            $message = "发送G代码到OctoPrint服务器...";
             $send_gcode = 1;
         } else {
-            $message = "G-code file exported to " . $self->{export_gcode_output_file};
+            $message = "G代码导出到" . $self->{export_gcode_output_file};
         }
     } else {
-        $message = "Export failed";
+        $message = "导出失败";
     }
     $self->{export_gcode_output_file} = undef;
     $self->statusbar->SetStatusText($message);
@@ -1187,9 +1187,9 @@ sub send_gcode {
     $self->statusbar->StopBusy;
     
     if ($res->is_success) {
-        $self->statusbar->SetStatusText("G-code file successfully uploaded to the OctoPrint server");
+        $self->statusbar->SetStatusText("G代码成功上载到OctoPrint服务器。");
     } else {
-        my $message = "Error while uploading to the OctoPrint server: " . $res->status_line;
+        my $message = "上载G代码到OctoPrint服务器时出错:" . $res->status_line;
         Slic3r::GUI::show_error($self, $message);
         $self->statusbar->SetStatusText($message);
     }
@@ -1202,7 +1202,7 @@ sub export_stl {
         
     my $output_file = $self->_get_export_file('STL') or return;
     Slic3r::Format::STL->write_file($output_file, $self->{model}, binary => 1);
-    $self->statusbar->SetStatusText("STL file exported to $output_file");
+    $self->statusbar->SetStatusText("导出STL文件到$output_file");
     
     # this method gets executed in a separate thread by wxWidgets since it's a button handler
     Slic3r::thread_cleanup() if $Slic3r::have_threads;
@@ -1218,7 +1218,7 @@ sub export_object_stl {
         
     my $output_file = $self->_get_export_file('STL') or return;
     Slic3r::Format::STL->write_file($output_file, $model_object->mesh, binary => 1);
-    $self->statusbar->SetStatusText("STL file exported to $output_file");
+    $self->statusbar->SetStatusText("导出STL文件到$output_file");
 }
 
 sub export_amf {
@@ -1228,7 +1228,7 @@ sub export_amf {
         
     my $output_file = $self->_get_export_file('AMF') or return;
     Slic3r::Format::AMF->write_file($output_file, $self->{model});
-    $self->statusbar->SetStatusText("AMF file exported to $output_file");
+    $self->statusbar->SetStatusText("导出AMF文件到$output_file");
     
     # this method gets executed in a separate thread by wxWidgets since it's a menu handler
     Slic3r::thread_cleanup() if $Slic3r::have_threads;
@@ -1244,7 +1244,7 @@ sub _get_export_file {
     {
         $output_file = $self->{print}->expanded_output_filepath($output_file);
         $output_file =~ s/\.gcode$/$suffix/i;
-        my $dlg = Wx::FileDialog->new($self, "Save $format file as:", dirname($output_file),
+        my $dlg = Wx::FileDialog->new($self, "保存 $format 文件到:", dirname($output_file),
             basename($output_file), &Slic3r::GUI::MODEL_WILDCARD, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
         if ($dlg->ShowModal != wxID_OK) {
             $dlg->Destroy;
@@ -1399,7 +1399,7 @@ sub object_cut_dialog {
     }
     
     if (!$Slic3r::GUI::have_OpenGL) {
-        Slic3r::GUI::show_error($self, "Please install the OpenGL modules to use this feature (see build instructions).");
+        Slic3r::GUI::show_error($self, "请安装OpenGL模块使用此功能(参见版本说明)。");
         return;
     }
     
@@ -1499,7 +1499,7 @@ sub selection_changed {
                 $self->{object_info_volume}->SetLabel(sprintf('%.2f', $stats->{volume} * ($model_instance->scaling_factor**3)));
                 $self->{object_info_facets}->SetLabel(sprintf('%d (%d shells)', $model_object->facets_count, $stats->{number_of_parts}));
                 if (my $errors = sum(@$stats{qw(degenerate_facets edges_fixed facets_removed facets_added facets_reversed backwards_edges)})) {
-                    $self->{object_info_manifold}->SetLabel(sprintf("Auto-repaired (%d errors)", $errors));
+                    $self->{object_info_manifold}->SetLabel(sprintf("自动修复(%d errors)", $errors));
                     $self->{object_info_manifold_warning_icon}->Show;
                     
                     # we don't show normals_fixed because we never provide normals
@@ -1509,7 +1509,7 @@ sub selection_changed {
                     $self->{object_info_manifold}->SetToolTipString($message);
                     $self->{object_info_manifold_warning_icon}->SetToolTipString($message);
                 } else {
-                    $self->{object_info_manifold}->SetLabel("Yes");
+                    $self->{object_info_manifold}->SetLabel("未发现");
                 }
             } else {
                 $self->{object_info_facets}->SetLabel($object->facets);
@@ -1581,77 +1581,77 @@ sub object_menu {
     
     my $frame = $self->GetFrame;
     my $menu = Wx::Menu->new;
-    $frame->_append_menu_item($menu, "Delete\tCtrl+Del", 'Remove the selected object', sub {
+    $frame->_append_menu_item($menu, "删除\tCtrl+Del", '删除选择的对象', sub {
         $self->remove;
     });
-    $frame->_append_menu_item($menu, "Increase copies\tCtrl++", 'Place one more copy of the selected object', sub {
+    $frame->_append_menu_item($menu, "拷贝副本\tCtrl++", '拷贝一个选择对象的副本', sub {
         $self->increase;
     });
-    $frame->_append_menu_item($menu, "Decrease copies\tCtrl+-", 'Remove one copy of the selected object', sub {
+    $frame->_append_menu_item($menu, "删除副本\tCtrl+-", '删除选择的副本', sub {
         $self->decrease;
     });
-    $frame->_append_menu_item($menu, "Set number of copies…", 'Change the number of copies of the selected object', sub {
+    $frame->_append_menu_item($menu, "拷贝多个", '通过改变这个数指定拷贝副本的数量', sub {
         $self->set_number_of_copies;
     });
     $menu->AppendSeparator();
-    $frame->_append_menu_item($menu, "Rotate 45° clockwise", 'Rotate the selected object by 45° clockwise', sub {
+    $frame->_append_menu_item($menu, "正转45°", '顺时针旋转45度', sub {
         $self->rotate(-45);
     });
-    $frame->_append_menu_item($menu, "Rotate 45° counter-clockwise", 'Rotate the selected object by 45° counter-clockwise', sub {
+    $frame->_append_menu_item($menu, "反转45°", '逆时针旋转45度', sub {
         $self->rotate(+45);
     });
     
     my $rotateMenu = Wx::Menu->new;
-    $menu->AppendSubMenu($rotateMenu, "Rotate", 'Rotate the selected object by an arbitrary angle');
-    $frame->_append_menu_item($rotateMenu, "Around X axis…", 'Rotate the selected object by an arbitrary angle around X axis', sub {
+    $menu->AppendSubMenu($rotateMenu, "3D旋转", '旋转所选对象到任意角度');
+    $frame->_append_menu_item($rotateMenu, "X轴…", '旋转所选对象围绕X轴的任意角度', sub {
         $self->rotate(undef, X);
     });
-    $frame->_append_menu_item($rotateMenu, "Around Y axis…", 'Rotate the selected object by an arbitrary angle around Y axis', sub {
+    $frame->_append_menu_item($rotateMenu, "Y轴…", '旋转所选对象围绕Y轴的任意角度', sub {
         $self->rotate(undef, Y);
     });
-    $frame->_append_menu_item($rotateMenu, "Around Z axis…", 'Rotate the selected object by an arbitrary angle around Z axis', sub {
+    $frame->_append_menu_item($rotateMenu, "Z轴…", '旋转所选对象围绕Z轴的任意角度', sub {
         $self->rotate(undef, Z);
     });
     
     my $flipMenu = Wx::Menu->new;
-    $menu->AppendSubMenu($flipMenu, "Flip", 'Mirror the selected object');
-    $frame->_append_menu_item($flipMenu, "Along X axis…", 'Mirror the selected object along the X axis', sub {
+    $menu->AppendSubMenu($flipMenu, "镜像", '镜像选择的对象');
+    $frame->_append_menu_item($flipMenu, "X轴…", '沿X轴镜像选定对象', sub {
         $self->flip(X);
     });
-    $frame->_append_menu_item($flipMenu, "Along Y axis…", 'Mirror the selected object along the Y axis', sub {
+    $frame->_append_menu_item($flipMenu, "Y轴…", '沿Y轴镜像选定对象', sub {
         $self->flip(Y);
     });
-    $frame->_append_menu_item($flipMenu, "Along Z axis…", 'Mirror the selected object along the Z axis', sub {
+    $frame->_append_menu_item($flipMenu, "Z轴…", '沿Z轴镜像选定对象', sub {
         $self->flip(Z);
     });
     
     my $scaleMenu = Wx::Menu->new;
-    $menu->AppendSubMenu($scaleMenu, "Scale", 'Scale the selected object along a single axis');
-    $frame->_append_menu_item($scaleMenu, "Uniformly…", 'Scale the selected object along the XYZ axes', sub {
+    $menu->AppendSubMenu($scaleMenu, "缩放", '缩放选定的对象沿某一个轴');
+    $frame->_append_menu_item($scaleMenu, "联动…", '整体缩放选定的对象', sub {
         $self->changescale(undef);
     });
-    $frame->_append_menu_item($scaleMenu, "Along X axis…", 'Scale the selected object along the X axis', sub {
+    $frame->_append_menu_item($scaleMenu, "X轴…", '将选定的对象在X轴方向缩放', sub {
         $self->changescale(X);
     });
-    $frame->_append_menu_item($scaleMenu, "Along Y axis…", 'Scale the selected object along the Y axis', sub {
+    $frame->_append_menu_item($scaleMenu, "Y轴…", '将选定的对象在Y轴方向缩放', sub {
         $self->changescale(Y);
     });
-    $frame->_append_menu_item($scaleMenu, "Along Z axis…", 'Scale the selected object along the Z axis', sub {
+    $frame->_append_menu_item($scaleMenu, "Z轴…", '将选定的对象在Z轴方向缩放', sub {
         $self->changescale(Z);
     });
     
-    $frame->_append_menu_item($menu, "Split", 'Split the selected object into individual parts', sub {
+    $frame->_append_menu_item($menu, "分裂", '将选定的对象分裂为单个零件', sub {
         $self->split_object;
     });
-    $frame->_append_menu_item($menu, "Cut…", 'Open the 3D cutting tool', sub {
+    $frame->_append_menu_item($menu, "切分", '打开3D切分工具', sub {
         $self->object_cut_dialog;
     });
     $menu->AppendSeparator();
-    $frame->_append_menu_item($menu, "Settings…", 'Open the object editor dialog', sub {
+    $frame->_append_menu_item($menu, "设置", '打开对象设置对话框', sub {
         $self->object_settings_dialog;
     });
     $menu->AppendSeparator();
-    $frame->_append_menu_item($menu, "Export object as STL…", 'Export this single object as STL file', sub {
+    $frame->_append_menu_item($menu, "导出对象到STL", '导出单个对象到STL文件', sub {
         $self->export_object_stl;
     });
     
