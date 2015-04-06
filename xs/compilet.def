@@ -1,4 +1,0 @@
-EXPORTS
-  boot_compilet
-  _boot_compilet = boot_compilet
-  
