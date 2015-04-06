@@ -155,46 +155,46 @@ sub _init_menubar {
     # File menu
     my $fileMenu = Wx::Menu->new;
     {
-        $self->_append_menu_item($fileMenu, "&Load Config…\tCtrl+L", 'Load exported configuration file', sub {
+        $self->_append_menu_item($fileMenu, "加载配置(&L)…\tCtrl+L", '加载配置文件', sub {
             $self->load_config_file;
         });
-        $self->_append_menu_item($fileMenu, "&Export Config…\tCtrl+E", 'Export current configuration to file', sub {
+        $self->_append_menu_item($fileMenu, "导出配置(&E)…\tCtrl+E", '导出配置文件', sub {
             $self->export_config;
         });
-        $self->_append_menu_item($fileMenu, "&Load Config Bundle…", 'Load presets from a bundle', sub {
+        $self->_append_menu_item($fileMenu, "加载全部配置…", '加载全部预设参数', sub {
             $self->load_configbundle;
         });
-        $self->_append_menu_item($fileMenu, "&Export Config Bundle…", 'Export all presets to file', sub {
+        $self->_append_menu_item($fileMenu, "导出全部配置…", '导出全部预设参数', sub {
             $self->export_configbundle;
         });
         $fileMenu->AppendSeparator();
         my $repeat;
-        $self->_append_menu_item($fileMenu, "Q&uick Slice…\tCtrl+U", 'Slice file', sub {
+        $self->_append_menu_item($fileMenu, "快速切片(&U)…\tCtrl+U", '快速切片', sub {
             $self->quick_slice;
             $repeat->Enable(defined $Slic3r::GUI::MainFrame::last_input_file);
         });
-        $self->_append_menu_item($fileMenu, "Quick Slice and Save &As…\tCtrl+Alt+U", 'Slice file and save as', sub {
+        $self->_append_menu_item($fileMenu, "快速切片并保存(&A)…\tCtrl+Alt+U", '切片并保存', sub {
             $self->quick_slice(save_as => 1);
             $repeat->Enable(defined $Slic3r::GUI::MainFrame::last_input_file);
         });
-        $repeat = $self->_append_menu_item($fileMenu, "&Repeat Last Quick Slice\tCtrl+Shift+U", 'Repeat last quick slice', sub {
+        $repeat = $self->_append_menu_item($fileMenu, "重新快速切片\tCtrl+Shift+U", '重新切片最后的文件', sub {
             $self->quick_slice(reslice => 1);
         });
         $repeat->Enable(0);
         $fileMenu->AppendSeparator();
-        $self->_append_menu_item($fileMenu, "Slice to SV&G…\tCtrl+G", 'Slice file to SVG', sub {
+        $self->_append_menu_item($fileMenu, "切片输出SV&G…\tCtrl+G", '切片并输出SVG', sub {
             $self->quick_slice(save_as => 1, export_svg => 1);
         });
         $fileMenu->AppendSeparator();
-        $self->_append_menu_item($fileMenu, "Repair STL file…", 'Automatically repair an STL file', sub {
+        $self->_append_menu_item($fileMenu, "修复STL文件…", '自动修复STL文件', sub {
             $self->repair_stl;
         });
         $fileMenu->AppendSeparator();
-        $self->_append_menu_item($fileMenu, "Preferences…", 'Application preferences', sub {
+        $self->_append_menu_item($fileMenu, "偏好设置…", '偏好设置', sub {
             Slic3r::GUI::Preferences->new($self)->ShowModal;
         }, wxID_PREFERENCES);
         $fileMenu->AppendSeparator();
-        $self->_append_menu_item($fileMenu, "&Quit", 'Quit Slic3r', sub {
+        $self->_append_menu_item($fileMenu, "退出(&Q)", '退出切片软件', sub {
             $self->Close(0);
         }, wxID_EXIT);
     }
@@ -204,13 +204,13 @@ sub _init_menubar {
         my $plater = $self->{plater};
         
         $self->{plater_menu} = Wx::Menu->new;
-        $self->_append_menu_item($self->{plater_menu}, "Export G-code...", 'Export current plate as G-code', sub {
+        $self->_append_menu_item($self->{plater_menu}, "输出G代码", '输出当前工作到一个G代码文件', sub {
             $plater->export_gcode;
         });
-        $self->_append_menu_item($self->{plater_menu}, "Export plate as STL...", 'Export current plate as STL', sub {
+        $self->_append_menu_item($self->{plater_menu}, "输出STL文件...", '输出当前工作到一个STL文件', sub {
             $plater->export_stl;
         });
-        $self->_append_menu_item($self->{plater_menu}, "Export plate as AMF...", 'Export current plate as AMF', sub {
+        $self->_append_menu_item($self->{plater_menu}, "输出AMF文件...", '输出当前工作到一个AMF文件', sub {
             $plater->export_amf;
         });
         
@@ -222,16 +222,16 @@ sub _init_menubar {
     my $windowMenu = Wx::Menu->new;
     {
         my $tab_count = $self->{no_plater} ? 3 : 4;
-        $self->_append_menu_item($windowMenu, "Select &Plater Tab\tCtrl+1", 'Show the plater', sub {
+        $self->_append_menu_item($windowMenu, "操作界面(&P)\tCtrl+1", '切换显示到操作界面', sub {
             $self->select_tab(0);
         }) unless $self->{no_plater};
-        $self->_append_menu_item($windowMenu, "Select P&rint Settings Tab\tCtrl+2", 'Show the print settings', sub {
+        $self->_append_menu_item($windowMenu, "切片参数(&R)\tCtrl+2", '切换显示到切片参数界面', sub {
             $self->select_tab($tab_count-3);
         });
-        $self->_append_menu_item($windowMenu, "Select &Filament Settings Tab\tCtrl+3", 'Show the filament settings', sub {
+        $self->_append_menu_item($windowMenu, "耗材设置(&F)\tCtrl+3", '切换显示到耗材设置界面', sub {
             $self->select_tab($tab_count-2);
         });
-        $self->_append_menu_item($windowMenu, "Select Print&er Settings Tab\tCtrl+4", 'Show the printer settings', sub {
+        $self->_append_menu_item($windowMenu, "打印机设置(&E)\tCtrl+4", '切换显示到打印机设置界面', sub {
             $self->select_tab($tab_count-1);
         });
     }
@@ -239,22 +239,22 @@ sub _init_menubar {
     # Help menu
     my $helpMenu = Wx::Menu->new;
     {
-        $self->_append_menu_item($helpMenu, "&Configuration $Slic3r::GUI::ConfigWizard::wizard…", "Run Configuration $Slic3r::GUI::ConfigWizard::wizard", sub {
+        $self->_append_menu_item($helpMenu, "配置向导(&C)…", "运行配置向导", sub {
             $self->config_wizard;
         });
         $helpMenu->AppendSeparator();
-        $self->_append_menu_item($helpMenu, "Slic3r &Website", 'Open the Slic3r website in your browser', sub {
+        $self->_append_menu_item($helpMenu, "网站(&W)", '从浏览器打开Slic3r站点', sub {
             Wx::LaunchDefaultBrowser('http://slic3r.org/');
         });
-        my $versioncheck = $self->_append_menu_item($helpMenu, "Check for &Updates...", 'Check for new Slic3r versions', sub {
+        my $versioncheck = $self->_append_menu_item($helpMenu, "在线升级(&U)...", '在线检查最新版本', sub {
             wxTheApp->check_version(1);
         });
         $versioncheck->Enable(wxTheApp->have_version_check);
-        $self->_append_menu_item($helpMenu, "Slic3r &Manual", 'Open the Slic3r manual in your browser', sub {
+        $self->_append_menu_item($helpMenu, "在线手册(&M)", '从浏览器打开操作手册', sub {
             Wx::LaunchDefaultBrowser('http://manual.slic3r.org/');
         });
         $helpMenu->AppendSeparator();
-        $self->_append_menu_item($helpMenu, "&About Slic3r", 'Show about dialog', sub {
+        $self->_append_menu_item($helpMenu, "关于(&A)", '显示关于对话框', sub {
             wxTheApp->about;
         });
     }
@@ -264,11 +264,11 @@ sub _init_menubar {
     # will not be handled correctly
     {
         my $menubar = Wx::MenuBar->new;
-        $menubar->Append($fileMenu, "&File");
-        $menubar->Append($self->{plater_menu}, "&Plater") if $self->{plater_menu};
-        $menubar->Append($self->{object_menu}, "&Object") if $self->{object_menu};
-        $menubar->Append($windowMenu, "&Window");
-        $menubar->Append($helpMenu, "&Help");
+        $menubar->Append($fileMenu, "文件(&F)");
+        $menubar->Append($self->{plater_menu}, "输出(&P)") if $self->{plater_menu};
+        $menubar->Append($self->{object_menu}, "对象(&O)") if $self->{object_menu};
+        $menubar->Append($windowMenu, "窗口(&W)");
+        $menubar->Append($helpMenu, "帮助(&H)");
         $self->SetMenuBar($menubar);
     }
 }
@@ -300,7 +300,7 @@ sub quick_slice {
         my $input_file;
         my $dir = $Slic3r::GUI::Settings->{recent}{skein_directory} || $Slic3r::GUI::Settings->{recent}{config_directory} || '';
         if (!$params{reslice}) {
-            my $dialog = Wx::FileDialog->new($self, 'Choose a file to slice (STL/OBJ/AMF):', $dir, "", &Slic3r::GUI::MODEL_WILDCARD, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+            my $dialog = Wx::FileDialog->new($self, '选择一个(STL/OBJ/AMF)文件:', $dir, "", &Slic3r::GUI::MODEL_WILDCARD, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
             if ($dialog->ShowModal != wxID_OK) {
                 $dialog->Destroy;
                 return;
@@ -310,13 +310,13 @@ sub quick_slice {
             $last_input_file = $input_file unless $params{export_svg};
         } else {
             if (!defined $last_input_file) {
-                Wx::MessageDialog->new($self, "No previously sliced file.",
-                                       'Error', wxICON_ERROR | wxOK)->ShowModal();
+                Wx::MessageDialog->new($self, "上一个模型没找到!",
+                                       '错误', wxICON_ERROR | wxOK)->ShowModal();
                 return;
             }
             if (! -e $last_input_file) {
-                Wx::MessageDialog->new($self, "Previously sliced file ($last_input_file) not found.",
-                                       'File Not Found', wxICON_ERROR | wxOK)->ShowModal();
+                Wx::MessageDialog->new($self, "上一个模型文件($last_input_file)没找到!",
+                                       '文件没找到', wxICON_ERROR | wxOK)->ShowModal();
                 return;
             }
             $input_file = $last_input_file;
@@ -358,7 +358,7 @@ sub quick_slice {
         } elsif ($params{save_as}) {
             $output_file = $sprint->expanded_output_filepath;
             $output_file =~ s/\.gcode$/.svg/i if $params{export_svg};
-            my $dlg = Wx::FileDialog->new($self, 'Save ' . ($params{export_svg} ? 'SVG' : 'G-code') . ' file as:',
+            my $dlg = Wx::FileDialog->new($self, '保存' . ($params{export_svg} ? 'SVG' : 'G-code') . '文件到:',
                 wxTheApp->output_path(dirname($output_file)),
                 basename($output_file), $params{export_svg} ? &Slic3r::GUI::FILE_WILDCARDS->{svg} : &Slic3r::GUI::FILE_WILDCARDS->{gcode}, wxFD_SAVE);
             if ($dlg->ShowModal != wxID_OK) {
@@ -373,7 +373,7 @@ sub quick_slice {
         }
         
         # show processbar dialog
-        $progress_dialog = Wx::ProgressDialog->new('Slicing…', "Processing $input_file_basename…", 
+        $progress_dialog = Wx::ProgressDialog->new('切片中…', "正在处理$input_file_basename…", 
             100, $self, 0);
         $progress_dialog->Pulse;
         
@@ -393,9 +393,9 @@ sub quick_slice {
         $progress_dialog->Destroy;
         undef $progress_dialog;
         
-        my $message = "$input_file_basename was successfully sliced.";
+        my $message = "$input_file_basename 切片成功完成!";
         wxTheApp->notify($message);
-        Wx::MessageDialog->new($self, $message, 'Slicing Done!', 
+        Wx::MessageDialog->new($self, $message, '切片完成!', 
             wxOK | wxICON_INFORMATION)->ShowModal;
     };
     Slic3r::GUI::catch_error($self, sub { $progress_dialog->Destroy if $progress_dialog });
@@ -407,7 +407,7 @@ sub repair_stl {
     my $input_file;
     {
         my $dir = $Slic3r::GUI::Settings->{recent}{skein_directory} || $Slic3r::GUI::Settings->{recent}{config_directory} || '';
-        my $dialog = Wx::FileDialog->new($self, 'Select the STL file to repair:', $dir, "", &Slic3r::GUI::FILE_WILDCARDS->{stl}, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+        my $dialog = Wx::FileDialog->new($self, '选择一个STL开始修复:', $dir, "", &Slic3r::GUI::FILE_WILDCARDS->{stl}, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
         if ($dialog->ShowModal != wxID_OK) {
             $dialog->Destroy;
             return;
@@ -419,7 +419,7 @@ sub repair_stl {
     my $output_file = $input_file;
     {
         $output_file =~ s/\.stl$/_fixed.obj/i;
-        my $dlg = Wx::FileDialog->new($self, "Save OBJ file (less prone to coordinate errors than STL) as:", dirname($output_file),
+        my $dlg = Wx::FileDialog->new($self, "保存修复后的OBJ文件到:", dirname($output_file),
             basename($output_file), &Slic3r::GUI::FILE_WILDCARDS->{obj}, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
         if ($dlg->ShowModal != wxID_OK) {
             $dlg->Destroy;
@@ -433,7 +433,7 @@ sub repair_stl {
     $tmesh->ReadSTLFile(Slic3r::encode_path($input_file));
     $tmesh->repair;
     $tmesh->WriteOBJFile(Slic3r::encode_path($output_file));
-    Slic3r::GUI::show_info($self, "Your file was repaired.", "Repair");
+    Slic3r::GUI::show_info($self, "您的文件已经修复", "修复");
 }
 
 sub extra_variables {
@@ -459,7 +459,7 @@ sub export_config {
     
     my $dir = $last_config ? dirname($last_config) : $Slic3r::GUI::Settings->{recent}{config_directory} || $Slic3r::GUI::Settings->{recent}{skein_directory} || '';
     my $filename = $last_config ? basename($last_config) : "config.ini";
-    my $dlg = Wx::FileDialog->new($self, 'Save configuration as:', $dir, $filename, 
+    my $dlg = Wx::FileDialog->new($self, '保存配置文件到:', $dir, $filename, 
         &Slic3r::GUI::FILE_WILDCARDS->{ini}, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if ($dlg->ShowModal == wxID_OK) {
         my $file = Slic3r::decode_path($dlg->GetPath);
@@ -478,7 +478,7 @@ sub load_config_file {
     if (!$file) {
         return unless $self->check_unsaved_changes;
         my $dir = $last_config ? dirname($last_config) : $Slic3r::GUI::Settings->{recent}{config_directory} || $Slic3r::GUI::Settings->{recent}{skein_directory} || '';
-        my $dlg = Wx::FileDialog->new($self, 'Select configuration to load:', $dir, "config.ini", 
+        my $dlg = Wx::FileDialog->new($self, '选择加载一个配置文件:', $dir, "config.ini", 
                 &Slic3r::GUI::FILE_WILDCARDS->{ini}, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
         return unless $dlg->ShowModal == wxID_OK;
         $file = Slic3r::decode_path($dlg->GetPaths);
@@ -503,7 +503,7 @@ sub export_configbundle {
     
     my $dir = $last_config ? dirname($last_config) : $Slic3r::GUI::Settings->{recent}{config_directory} || $Slic3r::GUI::Settings->{recent}{skein_directory} || '';
     my $filename = "Slic3r_config_bundle.ini";
-    my $dlg = Wx::FileDialog->new($self, 'Save presets bundle as:', $dir, $filename, 
+    my $dlg = Wx::FileDialog->new($self, '保存全部配置参数到:', $dir, $filename, 
         &Slic3r::GUI::FILE_WILDCARDS->{ini}, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if ($dlg->ShowModal == wxID_OK) {
         my $file = Slic3r::decode_path($dlg->GetPath);
@@ -536,7 +536,7 @@ sub load_configbundle {
     my $self = shift;
     
     my $dir = $last_config ? dirname($last_config) : $Slic3r::GUI::Settings->{recent}{config_directory} || $Slic3r::GUI::Settings->{recent}{skein_directory} || '';
-    my $dlg = Wx::FileDialog->new($self, 'Select configuration to load:', $dir, "config.ini", 
+    my $dlg = Wx::FileDialog->new($self, '选择加载一个配置文件:', $dir, "config.ini", 
             &Slic3r::GUI::FILE_WILDCARDS->{ini}, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     return unless $dlg->ShowModal == wxID_OK;
     my $file = Slic3r::decode_path($dlg->GetPaths);
@@ -578,9 +578,9 @@ sub load_configbundle {
             $tab->load_presets;
         }
     }
-    my $message = sprintf "%d presets successfully imported.", $imported;
+    my $message = sprintf "%d 预置成功导入。", $imported;
     if ($self->{mode} eq 'simple' && $Slic3r::GUI::Settings->{_}{mode} eq 'expert') {
-        Slic3r::GUI::show_info($self, "$message You need to restart Slic3r to make the changes effective.");
+        Slic3r::GUI::show_info($self, "$message 你需要重启slic3r使更改生效。");
     } else {
         Slic3r::GUI::show_info($self, $message);
     }
@@ -692,8 +692,8 @@ sub check_unsaved_changes {
     
     if (@dirty) {
         my $titles = join ', ', @dirty;
-        my $confirm = Wx::MessageDialog->new($self, "You have unsaved changes ($titles). Discard changes and continue anyway?",
-                                             'Unsaved Presets', wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+        my $confirm = Wx::MessageDialog->new($self, "你有未保存的更改($titles)。放弃更改并继续吗？",
+                                             '未保存的预设', wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
         return ($confirm->ShowModal == wxID_YES);
     }
     
