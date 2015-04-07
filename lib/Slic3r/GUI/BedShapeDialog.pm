@@ -1,4 +1,4 @@
-package Slic3r::GUI::BedShapeDialog;
+﻿package Slic3r::GUI::BedShapeDialog;
 use strict;
 use warnings;
 use utf8;
@@ -12,7 +12,7 @@ use base 'Wx::Dialog';
 sub new {
     my $class = shift;
     my ($parent, $default) = @_;
-    my $self = $class->SUPER::new($parent, -1, "Bed Shape", wxDefaultPosition, [350,700], wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    my $self = $class->SUPER::new($parent, -1, "热床参数", wxDefaultPosition, [350,700], wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
     
     $self->{panel} = my $panel = Slic3r::GUI::BedShapePanel->new($self, $default);
     
@@ -58,7 +58,7 @@ sub new {
     
     $self->on_change(undef);
     
-    my $box = Wx::StaticBox->new($self, -1, "Shape");
+    my $box = Wx::StaticBox->new($self, -1, "形状");
     my $sbsizer = Wx::StaticBoxSizer->new($box, wxVERTICAL);
     
     # shape options
@@ -67,41 +67,41 @@ sub new {
     
     $self->{optgroups} = [];
     {
-        my $optgroup = $self->_init_shape_options_page('Rectangular');
+        my $optgroup = $self->_init_shape_options_page('矩形');
         $optgroup->append_single_option_line(Slic3r::GUI::OptionsGroup::Option->new(
             opt_id      => 'rect_size',
             type        => 'point',
-            label       => 'Size',
-            tooltip     => 'Size in X and Y of the rectangular plate.',
+            label       => '尺寸',
+            tooltip     => '矩形热床X和Y的尺寸。',
             default     => [200,200],
         ));
         $optgroup->append_single_option_line(Slic3r::GUI::OptionsGroup::Option->new(
             opt_id      => 'rect_origin',
             type        => 'point',
-            label       => 'Origin',
-            tooltip     => 'Distance of the 0,0 G-code coordinate from the front left corner of the rectangle.',
+            label       => '原点',
+            tooltip     => '坐标原点的位置',
             default     => [0,0],
         ));
     }
     {
-        my $optgroup = $self->_init_shape_options_page('Circular');
+        my $optgroup = $self->_init_shape_options_page('圆形');
         $optgroup->append_single_option_line(Slic3r::GUI::OptionsGroup::Option->new(
             opt_id      => 'diameter',
             type        => 'f',
-            label       => 'Diameter',
-            tooltip     => 'Diameter of the print bed. It is assumed that origin (0,0) is located in the center.',
+            label       => '直径',
+            tooltip     => '热床直径。假定原点（0,0）位于中心。',
             sidetext    => 'mm',
             default     => 200,
         ));
     }
     {
-        my $optgroup = $self->_init_shape_options_page('Custom');
+        my $optgroup = $self->_init_shape_options_page('自定义');
         $optgroup->append_line(Slic3r::GUI::OptionsGroup::Line->new(
             full_width  => 1,
             widget      => sub {
                 my ($parent) = @_;
                 
-                my $btn = Wx::Button->new($parent, -1, "Load shape from STL...", wxDefaultPosition, wxDefaultSize);
+                my $btn = Wx::Button->new($parent, -1, "从STL加载热床外观...", wxDefaultPosition, wxDefaultSize);
                 EVT_BUTTON($self, $btn, sub { $self->_load_stl });
                 return $btn;
             }
@@ -364,7 +364,7 @@ sub _init_shape_options_page {
     my $optgroup;
     push @{$self->{optgroups}}, $optgroup = Slic3r::GUI::OptionsGroup->new(
         parent      => $panel,
-        title       => 'Settings',
+        title       => '参数设置',
         label_width => 100,
         on_change   => sub {
             my ($opt_id) = @_;
@@ -381,7 +381,7 @@ sub _init_shape_options_page {
 sub _load_stl {
     my ($self) = @_;
     
-    my $dialog = Wx::FileDialog->new($self, 'Choose a file to import bed shape from (STL/OBJ/AMF):', "", "", &Slic3r::GUI::MODEL_WILDCARD, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    my $dialog = Wx::FileDialog->new($self, '选择一个文件导入热床的形状(STL/OBJ/AMF):', "", "", &Slic3r::GUI::MODEL_WILDCARD, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if ($dialog->ShowModal != wxID_OK) {
         $dialog->Destroy;
         return;
@@ -394,11 +394,11 @@ sub _load_stl {
     my $expolygons = $mesh->horizontal_projection;
     
     if (@$expolygons == 0) {
-        Slic3r::GUI::show_error($self, "The selected file contains no geometry.");
+        Slic3r::GUI::show_error($self, "选择的文件不包含几何形状。");
         return;
     }
     if (@$expolygons > 1) {
-        Slic3r::GUI::show_error($self, "The selected file contains several disjoint areas. This is not supported.");
+        Slic3r::GUI::show_error($self, "不支持的文件，选定的文件包含多个不相交的区域。");
         return;
     }
     

@@ -23,8 +23,8 @@ PrintConfigDef::build_def() {
     Options["bed_temperature"].max = 300;
 
     Options["before_layer_gcode"].type = coString;
-    Options["before_layer_gcode"].label = "Before layer change G-code";
-    Options["before_layer_gcode"].tooltip = "This custom code is inserted at every layer change, right before the Z move. Note that you can use placeholder variables for all Slic3r settings as well as [layer_num] and [layer_z].";
+    Options["before_layer_gcode"].label = "变层G代码";
+    Options["before_layer_gcode"].tooltip = "这个自定义代码作用于当层改变时。";
     Options["before_layer_gcode"].cli = "before-layer-gcode=s";
     Options["before_layer_gcode"].multiline = true;
     Options["before_layer_gcode"].full_width = true;
@@ -432,10 +432,10 @@ PrintConfigDef::build_def() {
     Options["infill_only_where_needed"].cli = "infill-only-where-needed!";
 
     Options["infill_overlap"].type = coFloatOrPercent;
-    Options["infill_overlap"].label = "Infill/perimeters overlap";
-    Options["infill_overlap"].category = "Advanced";
+    Options["infill_overlap"].label = "填充/外壳重叠";
+    Options["infill_overlap"].category = "高级";
     Options["infill_overlap"].tooltip = "This setting applies an additional overlap between infill and perimeters for better bonding. Theoretically this shouldn't be needed, but backlash might cause gaps. If expressed as percentage (example: 15%) it is calculated over perimeter extrusion width.";
-    Options["infill_overlap"].sidetext = "mm or %";
+    Options["infill_overlap"].sidetext = "mm 或 %";
     Options["infill_overlap"].cli = "infill-overlap=s";
     Options["infill_overlap"].ratio_over = "perimeter_extrusion_width";
 

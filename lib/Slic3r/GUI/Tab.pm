@@ -645,7 +645,7 @@ sub build {
             $optgroup->append_single_option_line('support_material_extrusion_width');
         }
         {
-            my $optgroup = $page->new_optgroup('Overlap');
+            my $optgroup = $page->new_optgroup('重叠');
             $optgroup->append_single_option_line('infill_overlap');
         }
         {
@@ -961,7 +961,7 @@ sub build {
     my $bed_shape_widget = sub {
         my ($parent) = @_;
         
-        my $btn = Wx::Button->new($parent, -1, "设置", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+        my $btn = Wx::Button->new($parent, -1, " 设置", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
         $btn->SetFont($Slic3r::GUI::small_font);
         if ($Slic3r::GUI::have_button_icons) {
             $btn->SetBitmap(Wx::Bitmap->new("$Slic3r::var/cog.png", wxBITMAP_TYPE_PNG));
