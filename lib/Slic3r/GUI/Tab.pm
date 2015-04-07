@@ -1182,7 +1182,7 @@ sub _build_extruder_pages {
         }
         
         # build page
-        my $page = $self->{extruder_pages}[$extruder_idx] = $self->add_options_page("挤出机" . ($extruder_idx + 1), 'funnel.png');
+        my $page = $self->{extruder_pages}[$extruder_idx] = $self->add_options_page("挤出机 " . ($extruder_idx + 1), 'funnel.png');
         {
             my $optgroup = $page->new_optgroup('尺寸');
             $optgroup->append_single_option_line('nozzle_diameter', $extruder_idx);
