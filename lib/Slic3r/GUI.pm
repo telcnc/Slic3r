@@ -1,4 +1,4 @@
-package Slic3r::GUI;
+﻿package Slic3r::GUI;
 use strict;
 use warnings;
 use utf8;
@@ -36,13 +36,13 @@ use Wx::Event qw(EVT_IDLE EVT_COMMAND);
 use base 'Wx::App';
 
 use constant FILE_WILDCARDS => {
-    known   => 'Known files (*.stl, *.obj, *.amf, *.xml)|*.stl;*.STL;*.obj;*.OBJ;*.amf;*.AMF;*.xml;*.XML',
-    stl     => 'STL files (*.stl)|*.stl;*.STL',
-    obj     => 'OBJ files (*.obj)|*.obj;*.OBJ',
-    amf     => 'AMF files (*.amf)|*.amf;*.AMF;*.xml;*.XML',
-    ini     => 'INI files *.ini|*.ini;*.INI',
-    gcode   => 'G-code files (*.gcode, *.gco, *.g, *.ngc)|*.gcode;*.GCODE;*.gco;*.GCO;*.g;*.G;*.ngc;*.NGC',
-    svg     => 'SVG files *.svg|*.svg;*.SVG',
+    known   => '已知文件 (*.stl, *.obj, *.amf, *.xml)|*.stl;*.STL;*.obj;*.OBJ;*.amf;*.AMF;*.xml;*.XML',
+    stl     => 'STL 文件 (*.stl)|*.stl;*.STL',
+    obj     => 'OBJ 文件 (*.obj)|*.obj;*.OBJ',
+    amf     => 'AMF 文件 (*.amf)|*.amf;*.AMF;*.xml;*.XML',
+    ini     => 'INI 文件 *.ini|*.ini;*.INI',
+    gcode   => 'G代码文件 (*.gcode, *.gco, *.g, *.ngc)|*.gcode;*.GCODE;*.gco;*.GCO;*.g;*.G;*.ngc;*.NGC',
+    svg     => 'SVG 文件 *.svg|*.svg;*.SVG',
 };
 use constant MODEL_WILDCARD => join '|', @{&FILE_WILDCARDS}{qw(known stl obj amf)};
 

@@ -1,4 +1,4 @@
-package Slic3r::GUI::Tab;
+﻿package Slic3r::GUI::Tab;
 use strict;
 use warnings;
 use utf8;
@@ -40,8 +40,8 @@ sub new {
             wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
         $self->{btn_delete_preset} = Wx::BitmapButton->new($self, -1, Wx::Bitmap->new("$Slic3r::var/delete.png", wxBITMAP_TYPE_PNG), 
             wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
-        $self->{btn_save_preset}->SetToolTipString("Save current " . lc($self->title));
-        $self->{btn_delete_preset}->SetToolTipString("Delete this preset");
+        $self->{btn_save_preset}->SetToolTipString("保存" . lc($self->title));
+        $self->{btn_delete_preset}->SetToolTipString("删除当前预设");
         $self->{btn_delete_preset}->Disable;
         
         ### These cause GTK warnings:
@@ -92,7 +92,7 @@ sub new {
     EVT_BUTTON($self, $self->{btn_delete_preset}, sub {
         my $i = $self->current_preset;
         return if $i == 0;  # this shouldn't happen but let's trap it anyway
-        my $res = Wx::MessageDialog->new($self, "Are you sure you want to delete the selected preset?", 'Delete Preset', wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION)->ShowModal;
+        my $res = Wx::MessageDialog->new($self, "您确定要删除选定的预设？", '删除预设', wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION)->ShowModal;
         return unless $res == wxID_YES;
         if (-e $self->{presets}[$i]->file) {
             unlink $self->{presets}[$i]->file;
@@ -206,7 +206,7 @@ sub on_select_preset {
     
     if ($self->is_dirty) {
         my $old_preset = $self->get_current_preset;
-        my $name = $old_preset->default ? 'Default preset' : "Preset \"" . $old_preset->name . "\"";
+        my $name = $old_preset->default ? '缺省预设' : "Preset \"" . $old_preset->name . "\"";
         
         my @option_names = ();
         foreach my $opt_key (@{$self->dirty_options}) {
@@ -219,8 +219,8 @@ sub on_select_preset {
         }
         
         my $changes = join "\n", map "- $_", @option_names;
-        my $confirm = Wx::MessageDialog->new($self, "$name has unsaved changes:\n$changes\n\nDiscard changes and continue anyway?",
-                                             'Unsaved Changes', wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+        my $confirm = Wx::MessageDialog->new($self, "$name 有未保存的更改:\n$changes\n\n放弃更改并继续吗？",
+                                             '未保存的更改', wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
         if ($confirm->ShowModal == wxID_NO) {
             $self->{presets_choice}->SetSelection($self->current_preset);
             return;
@@ -246,7 +246,7 @@ sub on_select_preset {
         $Slic3r::GUI::Settings->{presets}{$self->name} = $preset->file ? basename($preset->file) : '';
     };
     if ($@) {
-        $@ = "I was unable to load the selected config file: $@";
+        $@ = "无法加载选定的配置文件: $@";
         Slic3r::GUI::catch_error($self);
         $self->select_default_preset;
     }
@@ -319,7 +319,7 @@ sub update_dirty {
     foreach my $i (0..$#{$self->{presets}}) {
         my $preset = $self->get_preset($i);
         if ($i == $self->current_preset && $self->is_dirty) {
-            $self->{presets_choice}->SetString($i, $preset->name . " (modified)");
+            $self->{presets_choice}->SetString($i, $preset->name . " (已修改)");
         } else {
             $self->{presets_choice}->SetString($i, $preset->name);
         }
@@ -346,7 +346,7 @@ sub load_presets {
     $self->{presets} = [
         Slic3r::GUI::Tab::Preset->new(
             default => 1,
-            name    => '- default -',
+            name    => '-默认-',
         ),
     ];
     
@@ -434,7 +434,7 @@ use base 'Slic3r::GUI::Tab';
 use Wx qw(:icon :dialog :id);
 
 sub name { 'print' }
-sub title { 'Print Settings' }
+sub title { '切片配置' }
 
 sub build {
     my $self = shift;
@@ -479,55 +479,55 @@ sub build {
     ));
     
     {
-        my $page = $self->add_options_page('Layers and perimeters', 'layers.png');
+        my $page = $self->add_options_page('层及表面', 'layers.png');
         {
-            my $optgroup = $page->new_optgroup('Layer height');
+            my $optgroup = $page->new_optgroup('层高');
             $optgroup->append_single_option_line('layer_height');
             $optgroup->append_single_option_line('first_layer_height');
         }
         {
-            my $optgroup = $page->new_optgroup('Vertical shells');
+            my $optgroup = $page->new_optgroup('垂直外壳');
             $optgroup->append_single_option_line('perimeters');
             $optgroup->append_single_option_line('spiral_vase');
         }
         {
-            my $optgroup = $page->new_optgroup('Horizontal shells');
+            my $optgroup = $page->new_optgroup('水平外壳');
             my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                label => 'Solid layers',
+                label => '实体层',
             );
             $line->append_option($optgroup->get_option('top_solid_layers'));
             $line->append_option($optgroup->get_option('bottom_solid_layers'));
             $optgroup->append_line($line);
         }
         {
-            my $optgroup = $page->new_optgroup('Quality (slower slicing)');
+            my $optgroup = $page->new_optgroup('品质');
             $optgroup->append_single_option_line('extra_perimeters');
             $optgroup->append_single_option_line('avoid_crossing_perimeters');
             $optgroup->append_single_option_line('thin_walls');
             $optgroup->append_single_option_line('overhangs');
         }
         {
-            my $optgroup = $page->new_optgroup('Advanced');
+            my $optgroup = $page->new_optgroup('高级');
             $optgroup->append_single_option_line('seam_position');
             $optgroup->append_single_option_line('external_perimeters_first');
         }
     }
     
     {
-        my $page = $self->add_options_page('Infill', 'shading.png');
+        my $page = $self->add_options_page('填充', 'shading.png');
         {
-            my $optgroup = $page->new_optgroup('Infill');
+            my $optgroup = $page->new_optgroup('填充');
             $optgroup->append_single_option_line('fill_density');
             $optgroup->append_single_option_line('fill_pattern');
             $optgroup->append_single_option_line('external_fill_pattern');
         }
         {
-            my $optgroup = $page->new_optgroup('Reducing printing time');
+            my $optgroup = $page->new_optgroup('快速打印');
             $optgroup->append_single_option_line('infill_every_layers');
             $optgroup->append_single_option_line('infill_only_where_needed');
         }
         {
-            my $optgroup = $page->new_optgroup('Advanced');
+            my $optgroup = $page->new_optgroup('高级');
             $optgroup->append_single_option_line('solid_infill_every_layers');
             $optgroup->append_single_option_line('fill_angle');
             $optgroup->append_single_option_line('solid_infill_below_area');
@@ -537,34 +537,34 @@ sub build {
     }
     
     {
-        my $page = $self->add_options_page('Skirt and brim', 'box.png');
+        my $page = $self->add_options_page('基座与外圈', 'box.png');
         {
-            my $optgroup = $page->new_optgroup('Skirt');
+            my $optgroup = $page->new_optgroup('外圈');
             $optgroup->append_single_option_line('skirts');
             $optgroup->append_single_option_line('skirt_distance');
             $optgroup->append_single_option_line('skirt_height');
             $optgroup->append_single_option_line('min_skirt_length');
         }
         {
-            my $optgroup = $page->new_optgroup('Brim');
+            my $optgroup = $page->new_optgroup('基座');
             $optgroup->append_single_option_line('brim_width');
         }
     }
     
     {
-        my $page = $self->add_options_page('Support material', 'building.png');
+        my $page = $self->add_options_page('支撑', 'building.png');
         {
-            my $optgroup = $page->new_optgroup('Support material');
+            my $optgroup = $page->new_optgroup('支撑');
             $optgroup->append_single_option_line('support_material');
             $optgroup->append_single_option_line('support_material_threshold');
             $optgroup->append_single_option_line('support_material_enforce_layers');
         }
         {
-            my $optgroup = $page->new_optgroup('Raft');
+            my $optgroup = $page->new_optgroup('基座');
             $optgroup->append_single_option_line('raft_layers');
         }
         {
-            my $optgroup = $page->new_optgroup('Options for support material and raft');
+            my $optgroup = $page->new_optgroup('基座/支撑选项');
             $optgroup->append_single_option_line('support_material_contact_distance');
             $optgroup->append_single_option_line('support_material_pattern');
             $optgroup->append_single_option_line('support_material_spacing');
@@ -576,9 +576,9 @@ sub build {
     }
     
     {
-        my $page = $self->add_options_page('Speed', 'time.png');
+        my $page = $self->add_options_page('速度', 'time.png');
         {
-            my $optgroup = $page->new_optgroup('Speed for print moves');
+            my $optgroup = $page->new_optgroup('打印速度');
             $optgroup->append_single_option_line('perimeter_speed');
             $optgroup->append_single_option_line('small_perimeter_speed');
             $optgroup->append_single_option_line('external_perimeter_speed');
@@ -591,15 +591,15 @@ sub build {
             $optgroup->append_single_option_line('gap_fill_speed');
         }
         {
-            my $optgroup = $page->new_optgroup('Speed for non-print moves');
+            my $optgroup = $page->new_optgroup('空程速度');
             $optgroup->append_single_option_line('travel_speed');
         }
         {
-            my $optgroup = $page->new_optgroup('Modifiers');
+            my $optgroup = $page->new_optgroup('附着力');
             $optgroup->append_single_option_line('first_layer_speed');
         }
         {
-            my $optgroup = $page->new_optgroup('Acceleration control (advanced)');
+            my $optgroup = $page->new_optgroup('加速度');
             $optgroup->append_single_option_line('perimeter_acceleration');
             $optgroup->append_single_option_line('infill_acceleration');
             $optgroup->append_single_option_line('bridge_acceleration');
@@ -609,9 +609,9 @@ sub build {
     }
     
     {
-        my $page = $self->add_options_page('Multiple Extruders', 'funnel.png');
+        my $page = $self->add_options_page('多挤出机', 'funnel.png');
         {
-            my $optgroup = $page->new_optgroup('Extruders');
+            my $optgroup = $page->new_optgroup('挤出机');
             $optgroup->append_single_option_line('perimeter_extruder');
             $optgroup->append_single_option_line('infill_extruder');
             $optgroup->append_single_option_line('solid_infill_extruder');
@@ -619,20 +619,20 @@ sub build {
             $optgroup->append_single_option_line('support_material_interface_extruder');
         }
         {
-            my $optgroup = $page->new_optgroup('Ooze prevention');
+            my $optgroup = $page->new_optgroup('防渗漏');
             $optgroup->append_single_option_line('ooze_prevention');
             $optgroup->append_single_option_line('standby_temperature_delta');
         }
         {
-            my $optgroup = $page->new_optgroup('Advanced');
+            my $optgroup = $page->new_optgroup('高级');
             $optgroup->append_single_option_line('interface_shells');
         }
     }
     
     {
-        my $page = $self->add_options_page('Advanced', 'wrench.png');
+        my $page = $self->add_options_page('高级', 'wrench.png');
         {
-            my $optgroup = $page->new_optgroup('Extrusion width',
+            my $optgroup = $page->new_optgroup('挤出宽度',
                 label_width => 180,
             );
             $optgroup->append_single_option_line('extrusion_width');
@@ -649,11 +649,11 @@ sub build {
             $optgroup->append_single_option_line('infill_overlap');
         }
         {
-            my $optgroup = $page->new_optgroup('Flow');
+            my $optgroup = $page->new_optgroup('挤出速率');
             $optgroup->append_single_option_line('bridge_flow_ratio');
         }
         {
-            my $optgroup = $page->new_optgroup('Other');
+            my $optgroup = $page->new_optgroup('其他');
             $optgroup->append_single_option_line('xy_size_compensation');
             $optgroup->append_single_option_line('threads') if $Slic3r::have_threads;
             $optgroup->append_single_option_line('resolution');
@@ -661,12 +661,12 @@ sub build {
     }
     
     {
-        my $page = $self->add_options_page('Output options', 'page_white_go.png');
+        my $page = $self->add_options_page('输出参数', 'page_white_go.png');
         {
-            my $optgroup = $page->new_optgroup('Sequential printing');
+            my $optgroup = $page->new_optgroup('打印顺序');
             $optgroup->append_single_option_line('complete_objects');
             my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                label => 'Extruder clearance (mm)',
+                label => '喷头净空尺寸',
             );
             foreach my $opt_key (qw(extruder_clearance_radius extruder_clearance_height)) {
                 my $option = $optgroup->get_option($opt_key);
@@ -676,7 +676,7 @@ sub build {
             $optgroup->append_line($line);
         }
         {
-            my $optgroup = $page->new_optgroup('Output file');
+            my $optgroup = $page->new_optgroup('输出文件');
             $optgroup->append_single_option_line('gcode_comments');
             
             {
@@ -686,7 +686,7 @@ sub build {
             }
         }
         {
-            my $optgroup = $page->new_optgroup('Post-processing scripts',
+            my $optgroup = $page->new_optgroup('后处理脚本',
                 label_width => 0,
             );
             my $option = $optgroup->get_option('post_process');
@@ -697,9 +697,9 @@ sub build {
     }
     
     {
-        my $page = $self->add_options_page('Notes', 'note.png');
+        my $page = $self->add_options_page('批注', 'note.png');
         {
-            my $optgroup = $page->new_optgroup('Notes',
+            my $optgroup = $page->new_optgroup('批注',
                 label_width => 0,
             );
             my $option = $optgroup->get_option('notes');
@@ -807,7 +807,7 @@ package Slic3r::GUI::Tab::Filament;
 use base 'Slic3r::GUI::Tab';
 
 sub name { 'filament' }
-sub title { 'Filament Settings' }
+sub title { '耗材配置' }
 
 sub build {
     my $self = shift;
@@ -821,19 +821,19 @@ sub build {
     ));
     
     {
-        my $page = $self->add_options_page('Filament', 'spool.png');
+        my $page = $self->add_options_page('耗材', 'spool.png');
         {
-            my $optgroup = $page->new_optgroup('Filament');
+            my $optgroup = $page->new_optgroup('耗材');
             $optgroup->append_single_option_line('filament_diameter', 0);
             $optgroup->append_single_option_line('extrusion_multiplier', 0);
         }
     
         {
-            my $optgroup = $page->new_optgroup('Temperature (°C)');
+            my $optgroup = $page->new_optgroup('温度传感器(°C)');
         
             {
                 my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                    label => 'Extruder',
+                    label => '喷头',
                 );
                 $line->append_option($optgroup->get_option('first_layer_temperature', 0));
                 $line->append_option($optgroup->get_option('temperature', 0));
@@ -842,7 +842,7 @@ sub build {
         
             {
                 my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                    label => 'Bed',
+                    label => '热床',
                 );
                 $line->append_option($optgroup->get_option('first_layer_bed_temperature'));
                 $line->append_option($optgroup->get_option('bed_temperature'));
@@ -852,9 +852,9 @@ sub build {
     }
     
     {
-        my $page = $self->add_options_page('Cooling', 'hourglass.png');
+        my $page = $self->add_options_page('冷却', 'hourglass.png');
         {
-            my $optgroup = $page->new_optgroup('Enable');
+            my $optgroup = $page->new_optgroup('开启');
             $optgroup->append_single_option_line('fan_always_on');
             $optgroup->append_single_option_line('cooling');
             
@@ -869,11 +869,11 @@ sub build {
             $optgroup->append_line($line);
         }
         {
-            my $optgroup = $page->new_optgroup('Fan settings');
+            my $optgroup = $page->new_optgroup('风扇设置');
             
             {
                 my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                    label => 'Fan speed',
+                    label => '风扇速度',
                 );
                 $line->append_option($optgroup->get_option('min_fan_speed'));
                 $line->append_option($optgroup->get_option('max_fan_speed'));
@@ -884,7 +884,7 @@ sub build {
             $optgroup->append_single_option_line('disable_fan_first_layers');
         }
         {
-            my $optgroup = $page->new_optgroup('Cooling thresholds',
+            my $optgroup = $page->new_optgroup('冷却阈值',
                 label_width => 250,
             );
             $optgroup->append_single_option_line('fan_below_layer_time');
@@ -913,24 +913,24 @@ sub _update_description {
     
     my $msg = "";
     my $fan_other_layers = $config->fan_always_on
-        ? sprintf "will always run at %d%%%s.", $config->min_fan_speed,
+        ? sprintf "将始终运行在%d%%%s.", $config->min_fan_speed,
                 ($config->disable_fan_first_layers > 1
-                    ? " except for the first " . $config->disable_fan_first_layers . " layers"
+                    ? "除了前" . $config->disable_fan_first_layers . "层。"
                     : $config->disable_fan_first_layers == 1
-                        ? " except for the first layer"
+                        ? " 除了首层。"
                         : "")
-        : "will be turned off.";
+        : "将被关闭。";
     
     if ($config->cooling) {
-        $msg = sprintf "If estimated layer time is below ~%ds, fan will run at %d%% and print speed will be reduced so that no less than %ds are spent on that layer (however, speed will never be reduced below %dmm/s).",
+        $msg = sprintf "如果预计整体打印时间少于%d秒，风扇将运行在%d%%。整体打印速度会降低，用时不少于%d秒(速度不会低于%dmm/s)。",
             $config->slowdown_below_layer_time, $config->max_fan_speed, $config->slowdown_below_layer_time, $config->min_print_speed;
         if ($config->fan_below_layer_time > $config->slowdown_below_layer_time) {
-            $msg .= sprintf "\nIf estimated layer time is greater, but still below ~%ds, fan will run at a proportionally decreasing speed between %d%% and %d%%.",
+            $msg .= sprintf "\n如果预计当前层需要更多的打印时间，但仍少于%d秒，风扇将按比例运行在%d%%与%d%%之间的一个速度，",
                 $config->fan_below_layer_time, $config->max_fan_speed, $config->min_fan_speed;
         }
-        $msg .= "\nDuring the other layers, fan $fan_other_layers"
+        $msg .= "\n在其他层，风扇$fan_other_layers"
     } else {
-        $msg = "Fan $fan_other_layers";
+        $msg = "风扇$fan_other_layers";
     }
     $self->{description_line}->SetText($msg);
 }
@@ -941,7 +941,7 @@ use Wx qw(:sizer :button :bitmap :misc :id);
 use Wx::Event qw(EVT_BUTTON);
 
 sub name { 'printer' }
-sub title { 'Printer Settings' }
+sub title { '打印机配置' }
 
 sub build {
     my $self = shift;
@@ -961,7 +961,7 @@ sub build {
     my $bed_shape_widget = sub {
         my ($parent) = @_;
         
-        my $btn = Wx::Button->new($parent, -1, "Set…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+        my $btn = Wx::Button->new($parent, -1, "设置", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
         $btn->SetFont($Slic3r::GUI::small_font);
         if ($Slic3r::GUI::have_button_icons) {
             $btn->SetBitmap(Wx::Bitmap->new("$Slic3r::var/cog.png", wxBITMAP_TYPE_PNG));
@@ -986,12 +986,12 @@ sub build {
     $self->{extruders_count} = 1;
     
     {
-        my $page = $self->add_options_page('General', 'printer_empty.png');
+        my $page = $self->add_options_page('通用设置', 'printer_empty.png');
         {
-            my $optgroup = $page->new_optgroup('Size and coordinates');
+            my $optgroup = $page->new_optgroup('尺寸及坐标');
             
             my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                label       => 'Bed shape',
+                label       => '热床形状',
                 widget      => $bed_shape_widget,
             );
             $optgroup->append_line($line);
@@ -999,13 +999,13 @@ sub build {
             $optgroup->append_single_option_line('z_offset');
         }
         {
-            my $optgroup = $page->new_optgroup('Capabilities');
+            my $optgroup = $page->new_optgroup('喷头数量');
             {
                 my $option = Slic3r::GUI::OptionsGroup::Option->new(
                     opt_id      => 'extruders_count',
                     type        => 'i',
                     default     => 1,
-                    label       => 'Extruders',
+                    label       => '挤出机',
                     tooltip     => 'Number of extruders of the printer.',
                     min         => 1,
                 );
@@ -1020,13 +1020,13 @@ sub build {
             });
         }
         {
-            my $optgroup = $page->new_optgroup('OctoPrint upload');
+            my $optgroup = $page->new_optgroup('网络打印');
             
             # append two buttons to the Host line
             my $octoprint_host_browse = sub {
                 my ($parent) = @_;
                 
-                my $btn = Wx::Button->new($parent, -1, "Browse…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+                my $btn = Wx::Button->new($parent, -1, "浏览", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
                 $btn->SetFont($Slic3r::GUI::small_font);
                 if ($Slic3r::GUI::have_button_icons) {
                     $btn->SetBitmap(Wx::Bitmap->new("$Slic3r::var/zoom.png", wxBITMAP_TYPE_PNG));
@@ -1052,7 +1052,7 @@ sub build {
             my $octoprint_host_test = sub {
                 my ($parent) = @_;
                 
-                my $btn = $self->{octoprint_host_test_btn} = Wx::Button->new($parent, -1, "Test", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+                my $btn = $self->{octoprint_host_test_btn} = Wx::Button->new($parent, -1, "测试", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
                 $btn->SetFont($Slic3r::GUI::small_font);
                 if ($Slic3r::GUI::have_button_icons) {
                     $btn->SetBitmap(Wx::Bitmap->new("$Slic3r::var/wrench.png", wxBITMAP_TYPE_PNG));
@@ -1084,11 +1084,11 @@ sub build {
             $optgroup->append_single_option_line('octoprint_apikey');
         }
         {
-            my $optgroup = $page->new_optgroup('Firmware');
+            my $optgroup = $page->new_optgroup('固件');
             $optgroup->append_single_option_line('gcode_flavor');
         }
         {
-            my $optgroup = $page->new_optgroup('Advanced');
+            my $optgroup = $page->new_optgroup('高级');
             $optgroup->append_single_option_line('use_relative_e_distances');
             $optgroup->append_single_option_line('use_firmware_retraction');
             $optgroup->append_single_option_line('use_volumetric_e');
@@ -1097,9 +1097,9 @@ sub build {
         }
     }
     {
-        my $page = $self->add_options_page('Custom G-code', 'cog.png');
+        my $page = $self->add_options_page('自定义G代码', 'cog.png');
         {
-            my $optgroup = $page->new_optgroup('Start G-code',
+            my $optgroup = $page->new_optgroup('开始G代码',
                 label_width => 0,
             );
             my $option = $optgroup->get_option('start_gcode');
@@ -1108,7 +1108,7 @@ sub build {
             $optgroup->append_single_option_line($option);
         }
         {
-            my $optgroup = $page->new_optgroup('End G-code',
+            my $optgroup = $page->new_optgroup('结束G代码',
                 label_width => 0,
             );
             my $option = $optgroup->get_option('end_gcode');
@@ -1117,7 +1117,7 @@ sub build {
             $optgroup->append_single_option_line($option);
         }
         {
-            my $optgroup = $page->new_optgroup('Before layer change G-code',
+            my $optgroup = $page->new_optgroup('变层G代码',
                 label_width => 0,
             );
             my $option = $optgroup->get_option('before_layer_gcode');
@@ -1135,7 +1135,7 @@ sub build {
             $optgroup->append_single_option_line($option);
         }
         {
-            my $optgroup = $page->new_optgroup('Tool change G-code',
+            my $optgroup = $page->new_optgroup('换头G代码',
                 label_width => 0,
             );
             my $option = $optgroup->get_option('toolchange_gcode');
@@ -1182,22 +1182,22 @@ sub _build_extruder_pages {
         }
         
         # build page
-        my $page = $self->{extruder_pages}[$extruder_idx] = $self->add_options_page("Extruder " . ($extruder_idx + 1), 'funnel.png');
+        my $page = $self->{extruder_pages}[$extruder_idx] = $self->add_options_page("挤出机" . ($extruder_idx + 1), 'funnel.png');
         {
-            my $optgroup = $page->new_optgroup('Size');
+            my $optgroup = $page->new_optgroup('尺寸');
             $optgroup->append_single_option_line('nozzle_diameter', $extruder_idx);
         }
         {
-            my $optgroup = $page->new_optgroup('Position (for multi-extruder printers)');
+            my $optgroup = $page->new_optgroup('多喷头位移');
             $optgroup->append_single_option_line('extruder_offset', $extruder_idx);
         }
         {
-            my $optgroup = $page->new_optgroup('Retraction');
+            my $optgroup = $page->new_optgroup('回抽');
             $optgroup->append_single_option_line($_, $extruder_idx)
                 for qw(retract_length retract_lift retract_speed retract_restart_extra retract_before_travel retract_layer_change wipe);
         }
         {
-            my $optgroup = $page->new_optgroup('Retraction when tool is disabled (advanced settings for multi-extruder setups)');
+            my $optgroup = $page->new_optgroup('喷头禁用时回抽(多喷头高级设置)');
             $optgroup->append_single_option_line($_, $extruder_idx)
                 for qw(retract_length_toolchange retract_restart_extra_toolchange);
         }
@@ -1221,7 +1221,7 @@ sub _build_extruder_pages {
     
     # rebuild page list
     @{$self->{pages}} = (
-        (grep $_->{title} !~ /^Extruder \d+/, @{$self->{pages}}),
+        (grep $_->{title} !~ /^挤出机 \d+/, @{$self->{pages}}),
         @{$self->{extruder_pages}}[ 0 .. $self->{extruders_count}-1 ],
     );
     $self->update_tree;
@@ -1367,11 +1367,11 @@ use base 'Wx::Dialog';
 sub new {
     my $class = shift;
     my ($parent, %params) = @_;
-    my $self = $class->SUPER::new($parent, -1, "Save preset", wxDefaultPosition, wxDefaultSize);
+    my $self = $class->SUPER::new($parent, -1, "保存预置", wxDefaultPosition, wxDefaultSize);
     
     my @values = @{$params{values}};
     
-    my $text = Wx::StaticText->new($self, -1, "Save " . lc($params{title}) . " as:", wxDefaultPosition, wxDefaultSize);
+    my $text = Wx::StaticText->new($self, -1, "保存" . lc($params{title}) . "到:", wxDefaultPosition, wxDefaultSize);
     $self->{combo} = Wx::ComboBox->new($self, -1, $params{default}, wxDefaultPosition, wxDefaultSize, \@values,
                                        wxTE_PROCESS_ENTER);
     my $buttons = $self->CreateStdDialogButtonSizer(wxOK | wxCANCEL);
@@ -1395,9 +1395,9 @@ sub accept {
 
     if (($self->{chosen_name} = $self->{combo}->GetValue)) {
         if ($self->{chosen_name} !~ /^[^<>:\/\\|?*\"]+$/i) {
-            Slic3r::GUI::show_error($self, "The supplied name is not valid; the following characters are not allowed: <>:/\|?*\"");
-        } elsif ($self->{chosen_name} eq '- default -') {
-            Slic3r::GUI::show_error($self, "The supplied name is not available.");
+            Slic3r::GUI::show_error($self, "名称无效；下面的字符是不允许的: <>:/\|?*\"");
+        } elsif ($self->{chosen_name} eq '-默认-') {
+            Slic3r::GUI::show_error($self, "提供的名称不可用。");
         } else {
             $self->EndModal(wxID_OK);
         }
@@ -1424,7 +1424,7 @@ sub config {
         return Slic3r::Config->new_from_defaults(@$keys);
     } else {
         if (!-e $self->file) {
-            Slic3r::GUI::show_error(undef, "The selected preset does not exist anymore (" . $self->file . ").");
+            Slic3r::GUI::show_error(undef, "选定的预设不存在(" . $self->file . ").");
             return undef;
         }
         

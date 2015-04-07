@@ -1,4 +1,4 @@
-package Slic3r::Print;
+﻿package Slic3r::Print;
 use strict;
 use warnings;
 
@@ -80,18 +80,18 @@ sub export_gcode {
     
     # output everything to a G-code file
     my $output_file = $self->expanded_output_filepath($params{output_file});
-    $self->status_cb->(90, "Exporting G-code" . ($output_file ? " to $output_file" : ""));
+    $self->status_cb->(90, "导出G代码" . ($output_file ? " to $output_file" : ""));
     $self->write_gcode($params{output_fh} || $output_file);
     
     # run post-processing scripts
     if (@{$self->config->post_process}) {
-        $self->status_cb->(95, "Running post-processing scripts");
+        $self->status_cb->(95, "运行后处理脚本");
         $self->config->setenv;
         for my $script (@{$self->config->post_process}) {
             Slic3r::debugf "  '%s' '%s'\n", $script, $output_file;
             # -x doesn't return true on Windows except for .exe files
             if (($^O eq 'MSWin32') ? !(-e $script) : !(-x $script)) {
-                die "The configured post-processing script is not executable: check permissions. ($script)\n";
+                die "后处理脚本不执行，请检查权限。 ($script)\n";
             }
             system($script, $output_file);
         }
@@ -108,8 +108,8 @@ sub export_svg {
     if (!$fh) {
         my $output_file = $self->expanded_output_filepath($params{output_file});
         $output_file =~ s/\.gcode$/.svg/i;
-        Slic3r::open(\$fh, ">", $output_file) or die "Failed to open $output_file for writing\n";
-        print "Exporting to $output_file..." unless $params{quiet};
+        Slic3r::open(\$fh, ">", $output_file) or die "不能打开 $output_file 无法写入\n";
+        print "导出 $output_file..." unless $params{quiet};
     }
     
     my $print_bb = $self->bounding_box;
@@ -210,7 +210,7 @@ sub make_skirt {
         $self->set_step_done(STEP_SKIRT);
         return;
     }
-    $self->status_cb->(88, "Generating skirt");
+    $self->status_cb->(88, "生成外圈");
     
     # First off we need to decide how tall the skirt must be.
     # The skirt_height option from config is expressed in layers, but our
@@ -337,7 +337,7 @@ sub make_brim {
         $self->set_step_done(STEP_BRIM);
         return;
     }
-    $self->status_cb->(88, "Generating brim");
+    $self->status_cb->(88, "生成底座");
     
     # brim is only printed on first layer and uses perimeter extruder
     my $first_layer_height = $self->skirt_first_layer_height;

@@ -190,7 +190,7 @@ sub new {
     });
     
     # right pane buttons
-    $self->{btn_export_gcode} = Wx::Button->new($self, -1, " 导出G3代码…", wxDefaultPosition, [-1, 30], wxBU_LEFT);
+    $self->{btn_export_gcode} = Wx::Button->new($self, -1, " 导出G代码…", wxDefaultPosition, [-1, 30], wxBU_LEFT);
     $self->{btn_send_gcode} = Wx::Button->new($self, -1, " 发送到打印机", wxDefaultPosition, [-1, 30], wxBU_LEFT);
     $self->{btn_export_stl} = Wx::Button->new($self, -1, " 导出STL文件", wxDefaultPosition, [-1, 30], wxBU_LEFT);
     #$self->{btn_export_gcode}->SetFont($Slic3r::GUI::small_font);

@@ -1,4 +1,4 @@
-package Slic3r::GUI::ConfigWizard;
+﻿package Slic3r::GUI::ConfigWizard;
 use strict;
 use warnings;
 use utf8;
@@ -8,13 +8,13 @@ use base 'Wx::Wizard';
 use Slic3r::Geometry qw(unscale);
 
 # adhere to various human interface guidelines
-our $wizard = 'Wizard';
+our $wizard = '向导';
 $wizard = 'Assistant' if &Wx::wxMAC || &Wx::wxGTK;
 
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, -1, "Configuration $wizard");
+    my $self = $class->SUPER::new($parent, -1, "配置$wizard");
 
     # initialize an empty repository
     $self->{config} = Slic3r::Config->new;
@@ -265,11 +265,11 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, "Welcome to the Slic3r Configuration $wizard", 'Welcome');
+    my $self = $class->SUPER::new($parent, "欢迎使用配置$wizard", '欢迎使用');
 
-    $self->append_text('Hello, welcome to Slic3r! This '.lc($wizard).' helps you with the initial configuration; just a few settings and you will be ready to print.');
-    $self->append_text('To import an existing configuration instead, cancel this '.lc($wizard).' and use the Open Config menu item found in the File menu.');
-    $self->append_text('To continue, click Next.');
+    $self->append_text('您好，使用配置'.lc($wizard).'有助于你的初始配置；只需很少几个步骤，你就可以开始工作。');
+    $self->append_text('如果你想导入现有配置请取消这个'.lc($wizard).'，使用文件菜单加载一个现有配置文件');
+    $self->append_text('需要继续，请单击“下一步”。');
 
     return $self;
 }
@@ -280,9 +280,9 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Firmware Type');
+    my $self = $class->SUPER::new($parent, '固件类型');
 
-    $self->append_text('Choose the type of firmware used by your printer, then click Next.');
+    $self->append_text('选择你的打印机使用的固件类型，然后单击“下一步”。');
     $self->append_option('gcode_flavor');
 
     return $self;
@@ -294,9 +294,9 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Bed Size');
+    my $self = $class->SUPER::new($parent, '打印床规格');
 
-    $self->append_text('Set the shape of your printer\'s bed, then click Next.');
+    $self->append_text('设置您的打印床的参数，然后单击“下一步”。');
     
     $self->config->apply(Slic3r::Config->new_from_defaults('bed_shape'));
     $self->{bed_shape_panel} = my $panel = Slic3r::GUI::BedShapePanel->new($self, $self->config->bed_shape);
@@ -313,9 +313,9 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Nozzle Diameter');
+    my $self = $class->SUPER::new($parent, '喷嘴直径');
 
-    $self->append_text('Enter the diameter of your printer\'s hot end nozzle, then click Next.');
+    $self->append_text('输入您的打印机热端的喷嘴直径，然后单击“下一步”。');
     $self->append_option('nozzle_diameter#0');
 
     return $self;
@@ -327,10 +327,10 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Filament Diameter');
+    my $self = $class->SUPER::new($parent, '耗材直径');
 
-    $self->append_text('Enter the diameter of your filament, then click Next.');
-    $self->append_text('Good precision is required, so use a caliper and do multiple measurements along the filament, then compute the average.');
+    $self->append_text('输入你的耗材直径，然后单击“下一步”。');
+    $self->append_text('要想得到好的精度，你需要使用卡尺在不同位置多次测量耗材直径，然后计算平均值。');
     $self->append_option('filament_diameter#0');
 
     return $self;
@@ -342,10 +342,10 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Extrusion Temperature');
+    my $self = $class->SUPER::new($parent, '喷头温度');
 
-    $self->append_text('Enter the temperature needed for extruding your filament, then click Next.');
-    $self->append_text('A rule of thumb is 160 to 230 °C for PLA, and 215 to 250 °C for ABS.');
+    $self->append_text('输入你的耗材所需要的最佳温度，然后单击“下一步”。');
+    $self->append_text('一般经验PAL是160°C至230°C，而ABS是215°C至250°C。');
     $self->append_option('temperature#0');
 
     return $self;
@@ -357,10 +357,10 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Bed Temperature');
+    my $self = $class->SUPER::new($parent, '热床温度');
 
-    $self->append_text('Enter the bed temperature needed for getting your filament to stick to your heated bed, then click Next.');
-    $self->append_text('A rule of thumb is 60 °C for PLA and 110 °C for ABS. Leave zero if you have no heated bed.');
+    $self->append_text('输入你的打印床加热需要保持的床层温度，然后单击“下一步”。');
+    $self->append_text('一般经验PAL是60°C而ABS为110°C。如果没有加热床请设置为0。');
     $self->append_option('bed_temperature');
     
     return $self;
@@ -372,11 +372,11 @@ use base 'Slic3r::GUI::ConfigWizard::Page';
 sub new {
     my $class = shift;
     my ($parent) = @_;
-    my $self = $class->SUPER::new($parent, 'Congratulations!', 'Finish');
+    my $self = $class->SUPER::new($parent, '恭喜！', '配置完成');
 
-    $self->append_text("You have successfully completed the Slic3r Configuration $wizard. " .
-                       'Slic3r is now configured for your printer and filament.');
-    $self->append_text('To close this '.lc($wizard).' and apply the newly created configuration, click Finish.');
+    $self->append_text("您已成功完成slic3r配置$wizard. " .
+                       '您已经正确完成了您的打印机和耗材的参数配置');
+    $self->append_text('关闭这个'.lc($wizard).'并使用新创建的配置，请单击“完成”。');
 
     return $self;
 }

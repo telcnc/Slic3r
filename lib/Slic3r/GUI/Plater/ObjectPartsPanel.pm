@@ -1,4 +1,4 @@
-package Slic3r::GUI::Plater::ObjectPartsPanel;
+﻿package Slic3r::GUI::Plater::ObjectPartsPanel;
 use strict;
 use warnings;
 use utf8;
@@ -31,14 +31,14 @@ sub new {
         $self->{tree_icons}->Add(Wx::Bitmap->new("$Slic3r::var/package.png", wxBITMAP_TYPE_PNG));   # ICON_SOLIDMESH
         $self->{tree_icons}->Add(Wx::Bitmap->new("$Slic3r::var/plugin.png", wxBITMAP_TYPE_PNG));    # ICON_MODIFIERMESH
         
-        my $rootId = $tree->AddRoot("Object", ICON_OBJECT);
+        my $rootId = $tree->AddRoot("对象", ICON_OBJECT);
         $tree->SetPlData($rootId, { type => 'object' });
     }
     
     # buttons
-    $self->{btn_load_part} = Wx::Button->new($self, -1, "Load part…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
-    $self->{btn_load_modifier} = Wx::Button->new($self, -1, "Load modifier…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
-    $self->{btn_delete} = Wx::Button->new($self, -1, "Delete part", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+    $self->{btn_load_part} = Wx::Button->new($self, -1, "加载组件…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+    $self->{btn_load_modifier} = Wx::Button->new($self, -1, "加载接触面…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+    $self->{btn_delete} = Wx::Button->new($self, -1, "删除组件", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
     if ($Slic3r::GUI::have_button_icons) {
         $self->{btn_load_part}->SetBitmap(Wx::Bitmap->new("$Slic3r::var/brick_add.png", wxBITMAP_TYPE_PNG));
         $self->{btn_load_modifier}->SetBitmap(Wx::Bitmap->new("$Slic3r::var/brick_add.png", wxBITMAP_TYPE_PNG));
@@ -56,7 +56,7 @@ sub new {
     
     # part settings panel
     $self->{settings_panel} = Slic3r::GUI::Plater::OverrideSettingsPanel->new($self, on_change => sub { $self->{part_settings_changed} = 1; });
-    my $settings_sizer = Wx::StaticBoxSizer->new($self->{staticbox} = Wx::StaticBox->new($self, -1, "Part Settings"), wxVERTICAL);
+    my $settings_sizer = Wx::StaticBoxSizer->new($self->{staticbox} = Wx::StaticBox->new($self, -1, "组件设置"), wxVERTICAL);
     $settings_sizer->Add($self->{settings_panel}, 1, wxEXPAND | wxALL, 0);
     
     # left pane with tree
@@ -181,7 +181,7 @@ sub selection_changed {
             # attach volume config to settings panel
             my $volume = $self->{model_object}->volumes->[ $itemData->{volume_id} ];
             $config = $volume->config;
-            $self->{staticbox}->SetLabel('Part Settings');
+            $self->{staticbox}->SetLabel('组件设置');
             
             # get default values
             @opt_keys = @{Slic3r::Config::PrintRegion->new->get_keys};
@@ -189,7 +189,7 @@ sub selection_changed {
             # select nothing in 3D preview
             
             # attach object config to settings panel
-            $self->{staticbox}->SetLabel('Object Settings');
+            $self->{staticbox}->SetLabel('对象设置');
             @opt_keys = (map @{$_->get_keys}, Slic3r::Config::PrintObject->new, Slic3r::Config::PrintRegion->new);
             $config = $self->{model_object}->config;
         }
@@ -250,7 +250,7 @@ sub on_btn_delete {
         
         # if user is deleting the last solid part, throw error
         if (!$volume->modifier && scalar(grep !$_->modifier, @{$self->{model_object}->volumes}) == 1) {
-            Slic3r::GUI::show_error($self, "You can't delete the last solid part from this object.");
+            Slic3r::GUI::show_error($self, "你不能从这个对象删除最后的零件。");
             return;
         }
         

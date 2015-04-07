@@ -1,4 +1,4 @@
-package Slic3r::GUI::Plater::ObjectSettingsDialog;
+﻿package Slic3r::GUI::Plater::ObjectSettingsDialog;
 use strict;
 use warnings;
 use utf8;
@@ -10,12 +10,12 @@ use base 'Wx::Dialog';
 sub new {
     my $class = shift;
     my ($parent, %params) = @_;
-    my $self = $class->SUPER::new($parent, -1, "Settings for " . $params{object}->name, wxDefaultPosition, [700,500], wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    my $self = $class->SUPER::new($parent, -1, "设置" . $params{object}->name, wxDefaultPosition, [700,500], wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
     $self->{$_} = $params{$_} for keys %params;
     
     $self->{tabpanel} = Wx::Notebook->new($self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP | wxTAB_TRAVERSAL);
-    $self->{tabpanel}->AddPage($self->{parts} = Slic3r::GUI::Plater::ObjectPartsPanel->new($self->{tabpanel}, model_object => $params{model_object}), "Parts");
-    $self->{tabpanel}->AddPage($self->{layers} = Slic3r::GUI::Plater::ObjectDialog::LayersTab->new($self->{tabpanel}), "Layers");
+    $self->{tabpanel}->AddPage($self->{parts} = Slic3r::GUI::Plater::ObjectPartsPanel->new($self->{tabpanel}, model_object => $params{model_object}), "组件");
+    $self->{tabpanel}->AddPage($self->{layers} = Slic3r::GUI::Plater::ObjectDialog::LayersTab->new($self->{tabpanel}), "可变层高");
     
     my $buttons = $self->CreateStdDialogButtonSizer(wxOK);
     EVT_BUTTON($self, wxID_OK, sub {
@@ -72,7 +72,7 @@ sub new {
     my $sizer = Wx::BoxSizer->new(wxVERTICAL);
     
     {
-        my $label = Wx::StaticText->new($self, -1, "You can use this section to override the default layer height for parts of this object. Set layer height to zero to skip portions of the input file.",
+        my $label = Wx::StaticText->new($self, -1, "你可以用这些参数覆盖对象的默认层高。如果将层高设置为0会跳过对那部分配置的覆盖，使用原先的参数。",
             wxDefaultPosition, [-1, 40]);
         $label->SetFont(Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
         $sizer->Add($label, 0, wxEXPAND | wxALL, 10);
@@ -83,9 +83,9 @@ sub new {
     $grid->CreateGrid(0, 3);
     $grid->DisableDragRowSize;
     $grid->HideRowLabels if &Wx::wxVERSION_STRING !~ / 2\.8\./;
-    $grid->SetColLabelValue(0, "Min Z (mm)");
-    $grid->SetColLabelValue(1, "Max Z (mm)");
-    $grid->SetColLabelValue(2, "Layer height (mm)");
+    $grid->SetColLabelValue(0, "从(mm)");
+    $grid->SetColLabelValue(1, "到(mm)");
+    $grid->SetColLabelValue(2, "层高(mm)");
     $grid->SetColSize($_, 135) for 0..2;
     $grid->SetDefaultCellAlignment(wxALIGN_CENTRE, wxALIGN_CENTRE);
     
@@ -131,15 +131,15 @@ sub CanClose {
     foreach my $range ($self->_get_ranges) {
         my ($min, $max, $height) = @$range;
         if ($max <= $min) {
-            Slic3r::GUI::show_error($self, "Invalid Z range $min-$max.");
+            Slic3r::GUI::show_error($self, "无效的Z坐标 $min-$max.");
             return 0;
         }
         if ($min < 0 || $max < 0) {
-            Slic3r::GUI::show_error($self, "Invalid Z range $min-$max.");
+            Slic3r::GUI::show_error($self, "无效的Z坐标 $min-$max.");
             return 0;
         }
         if ($height < 0) {
-            Slic3r::GUI::show_error($self, "Invalid layer height $height.");
+            Slic3r::GUI::show_error($self, "无效的层高 $height.");
             return 0;
         }
         # TODO: check for overlapping ranges

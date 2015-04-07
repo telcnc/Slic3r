@@ -1,4 +1,4 @@
-package Slic3r::GUI::Plater::2D;
+﻿package Slic3r::GUI::Plater::2D;
 use strict;
 use warnings;
 use utf8;
@@ -11,8 +11,8 @@ use Wx::Event qw(EVT_MOUSE_EVENTS EVT_PAINT EVT_SIZE);
 use base 'Wx::Panel';
 
 use constant CANVAS_TEXT => join('-', +(localtime)[3,4]) eq '13-8'
-    ? 'What do you want to print today? ™' # Sept. 13, 2006. The first part ever printed by a RepRap to make another RepRap.
-    : 'Drag your objects here';
+    ? '你今天想打印点什么? ™' # Sept. 13, 2006. The first part ever printed by a RepRap to make another RepRap.
+    : '把你的模型放在这里';
 
 sub new {
     my $class = shift;

@@ -1,4 +1,4 @@
-package Slic3r::GUI::SimpleTab;
+﻿package Slic3r::GUI::SimpleTab;
 use strict;
 use warnings;
 use utf8;
@@ -25,7 +25,7 @@ sub new {
     $self->_update;
     
     {
-        my $label = Wx::StaticText->new($self, -1, "Want more options? Switch to the Expert Mode.", wxDefaultPosition, wxDefaultSize);
+        my $label = Wx::StaticText->new($self, -1, "希望有更多的选择吗？切换到专家模式。", wxDefaultPosition, wxDefaultSize);
         $label->SetFont(Wx::SystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
         $self->{vsizer}->Add($label, 0, wxEXPAND | wxALL, 10);
     }
@@ -112,7 +112,7 @@ use base 'Slic3r::GUI::SimpleTab';
 use Wx qw(:sizer);
 
 sub name { 'print' }
-sub title { 'Print Settings' }
+sub title { '切片设置' }
 
 sub build {
     my $self = shift;
@@ -128,12 +128,12 @@ sub build {
     ));
     
     {
-        my $optgroup = $self->new_optgroup('General');
+        my $optgroup = $self->new_optgroup('通用');
         $optgroup->append_single_option_line('layer_height');
         $optgroup->append_single_option_line('perimeters');
         
         my $line = Slic3r::GUI::OptionsGroup::Line->new(
-            label => 'Solid layers',
+            label => '实体层',
         );
         $line->append_option($optgroup->get_option('top_solid_layers'));
         $line->append_option($optgroup->get_option('bottom_solid_layers'));
@@ -141,14 +141,14 @@ sub build {
     }
     
     {
-        my $optgroup = $self->new_optgroup('Infill');
+        my $optgroup = $self->new_optgroup('填充');
         $optgroup->append_single_option_line('fill_density');
         $optgroup->append_single_option_line('fill_pattern');
         $optgroup->append_single_option_line('external_fill_pattern');
     }
     
     {
-        my $optgroup = $self->new_optgroup('Support material');
+        my $optgroup = $self->new_optgroup('支撑');
         $optgroup->append_single_option_line('support_material');
         $optgroup->append_single_option_line('support_material_spacing');
         $optgroup->append_single_option_line('support_material_contact_distance');
@@ -157,19 +157,19 @@ sub build {
     }
     
     {
-        my $optgroup = $self->new_optgroup('Speed');
+        my $optgroup = $self->new_optgroup('速度');
         $optgroup->append_single_option_line('perimeter_speed');
         $optgroup->append_single_option_line('infill_speed');
         $optgroup->append_single_option_line('travel_speed');
     }
     
     {
-        my $optgroup = $self->new_optgroup('Brim');
+        my $optgroup = $self->new_optgroup('基座');
         $optgroup->append_single_option_line('brim_width');
     }
     
     {
-        my $optgroup = $self->new_optgroup('Other');
+        my $optgroup = $self->new_optgroup('其他');
         $optgroup->append_single_option_line('xy_size_compensation');
     }
 }
@@ -202,7 +202,7 @@ package Slic3r::GUI::SimpleTab::Filament;
 use base 'Slic3r::GUI::SimpleTab';
 
 sub name { 'filament' }
-sub title { 'Filament Settings' }
+sub title { '耗材设置' }
 
 sub build {
     my $self = shift;
@@ -213,17 +213,17 @@ sub build {
     ));
     
     {
-        my $optgroup = $self->new_optgroup('Filament');
+        my $optgroup = $self->new_optgroup('耗材');
         $optgroup->append_single_option_line('filament_diameter', 0);
         $optgroup->append_single_option_line('extrusion_multiplier', 0);
     }
     
     {
-        my $optgroup = $self->new_optgroup('Temperature (°C)');
+        my $optgroup = $self->new_optgroup('温度(°C)');
         
         {
             my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                label => 'Extruder',
+                label => '挤出机',
             );
             $line->append_option($optgroup->get_option('first_layer_temperature', 0));
             $line->append_option($optgroup->get_option('temperature', 0));
@@ -232,7 +232,7 @@ sub build {
         
         {
             my $line = Slic3r::GUI::OptionsGroup::Line->new(
-                label => 'Bed',
+                label => '热床',
             );
             $line->append_option($optgroup->get_option('first_layer_bed_temperature'));
             $line->append_option($optgroup->get_option('bed_temperature'));
@@ -247,7 +247,7 @@ use Wx qw(:sizer :button :bitmap :misc :id);
 use Wx::Event qw(EVT_BUTTON);
 
 sub name { 'printer' }
-sub title { 'Printer Settings' }
+sub title { '打印机设置' }
 
 sub build {
     my $self = shift;
@@ -266,7 +266,7 @@ sub build {
         my $bed_shape_widget = sub {
             my ($parent) = @_;
         
-            my $btn = Wx::Button->new($parent, -1, "Set…", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
+            my $btn = Wx::Button->new($parent, -1, "设置", wxDefaultPosition, wxDefaultSize, wxBU_LEFT);
             $btn->SetFont($Slic3r::GUI::small_font);
             if ($Slic3r::GUI::have_button_icons) {
                 $btn->SetBitmap(Wx::Bitmap->new("$Slic3r::var/cog.png", wxBITMAP_TYPE_PNG));
@@ -287,7 +287,7 @@ sub build {
             return $sizer;
         };
     
-        my $optgroup = $self->new_optgroup('Size and coordinates');
+        my $optgroup = $self->new_optgroup('尺寸与坐标');
         my $line = Slic3r::GUI::OptionsGroup::Line->new(
             label       => 'Bed shape',
             widget      => $bed_shape_widget,
@@ -297,24 +297,24 @@ sub build {
     }
     
     {
-        my $optgroup = $self->new_optgroup('Firmware');
+        my $optgroup = $self->new_optgroup('固件');
         $optgroup->append_single_option_line('gcode_flavor');
     }
     
     {
-        my $optgroup = $self->new_optgroup('Extruder');
+        my $optgroup = $self->new_optgroup('挤出机');
         $optgroup->append_single_option_line('nozzle_diameter', 0);
     }
     
     {
-        my $optgroup = $self->new_optgroup('Retraction');
+        my $optgroup = $self->new_optgroup('回抽');
         $optgroup->append_single_option_line('retract_length', 0);
         $optgroup->append_single_option_line('retract_lift', 0);
         $optgroup->append_single_option_line('wipe', 0);
     }
     
     {
-        my $optgroup = $self->new_optgroup('Start G-code',
+        my $optgroup = $self->new_optgroup('开始G代码',
             label_width => 0,
         );
         my $option = $optgroup->get_option('start_gcode');
@@ -324,7 +324,7 @@ sub build {
     }
     
     {
-        my $optgroup = $self->new_optgroup('End G-code',
+        my $optgroup = $self->new_optgroup('结束G代码',
             label_width => 0,
         );
         my $option = $optgroup->get_option('end_gcode');

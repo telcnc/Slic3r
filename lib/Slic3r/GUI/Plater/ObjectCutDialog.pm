@@ -1,4 +1,4 @@
-package Slic3r::GUI::Plater::ObjectCutDialog;
+﻿package Slic3r::GUI::Plater::ObjectCutDialog;
 use strict;
 use warnings;
 use utf8;
@@ -27,7 +27,7 @@ sub new {
     my $optgroup;
     $optgroup = $self->{optgroup} = Slic3r::GUI::OptionsGroup->new(
         parent      => $self,
-        title       => 'Cut',
+        title       => '切分模型',
         on_change   => sub {
             my ($opt_id) = @_;
             
@@ -39,7 +39,7 @@ sub new {
     $optgroup->append_single_option_line(Slic3r::GUI::OptionsGroup::Option->new(
         opt_id      => 'z',
         type        => 'slider',
-        label       => 'Z',
+        label       => 'Z轴',
         default     => $self->{cut_options}{z},
         min         => 0,
         max         => $self->{model_object}->bounding_box->size->z,
@@ -47,32 +47,32 @@ sub new {
     ));
     {
         my $line = Slic3r::GUI::OptionsGroup::Line->new(
-            label => 'Keep',
+            label => '保留',
         );
         $line->append_option(Slic3r::GUI::OptionsGroup::Option->new(
             opt_id  => 'keep_upper',
             type    => 'bool',
-            label   => 'Upper part',
+            label   => '上部',
             default => $self->{cut_options}{keep_upper},
         ));
         $line->append_option(Slic3r::GUI::OptionsGroup::Option->new(
             opt_id  => 'keep_lower',
             type    => 'bool',
-            label   => 'Lower part',
+            label   => '下部',
             default => $self->{cut_options}{keep_lower},
         ));
         $optgroup->append_line($line);
     }
     $optgroup->append_single_option_line(Slic3r::GUI::OptionsGroup::Option->new(
         opt_id      => 'rotate_lower',
-        label       => 'Rotate lower part upwards',
+        label       => '下部翻转',
         type        => 'bool',
-        tooltip     => 'If enabled, the lower part will be rotated by 180° so that the flat cut surface lies on the print bed.',
+        tooltip     => '如果启用，下部将旋转180°使平切表面位于打印床。',
         default     => $self->{cut_options}{rotate_lower},
     ));
     {
         my $cut_button_sizer = Wx::BoxSizer->new(wxVERTICAL);
-        $self->{btn_cut} = Wx::Button->new($self, -1, "Perform cut", wxDefaultPosition, wxDefaultSize);
+        $self->{btn_cut} = Wx::Button->new($self, -1, "开始切分", wxDefaultPosition, wxDefaultSize);
         $cut_button_sizer->Add($self->{btn_cut}, 0, wxALIGN_RIGHT | wxALL, 10);
         $optgroup->append_line(Slic3r::GUI::OptionsGroup::Line->new(
             sizer => $cut_button_sizer,

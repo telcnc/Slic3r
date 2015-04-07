@@ -91,7 +91,7 @@ sub _init_tabpanel {
     $self->{tabpanel} = my $panel = Wx::Notebook->new($self, -1, wxDefaultPosition, wxDefaultSize, wxNB_TOP | wxTAB_TRAVERSAL);
     
     if (!$self->{no_plater}) {
-        $panel->AddPage($self->{plater} = Slic3r::GUI::Plater->new($panel), "Plater");
+        $panel->AddPage($self->{plater} = Slic3r::GUI::Plater->new($panel), "操作界面");
     }
     $self->{options_tabs} = {};
     
