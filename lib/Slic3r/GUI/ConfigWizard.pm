@@ -360,7 +360,7 @@ sub new {
     my $self = $class->SUPER::new($parent, '热床温度');
 
     $self->append_text('输入你的打印床加热需要保持的床层温度，然后单击“下一步”。');
-    $self->append_text('一般经验PAL是60°C而ABS为110°C。如果没有加热床请设置为0。');
+    $self->append_text('一般经验PLA是60°C而ABS为110°C。如果没有加热床请设置为0。');
     $self->append_option('bed_temperature');
     
     return $self;

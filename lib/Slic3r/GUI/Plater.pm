@@ -339,7 +339,7 @@ sub new {
         
         my $object_info_sizer;
         {
-            my $box = Wx::StaticBox->new($self, -1, "Info");
+            my $box = Wx::StaticBox->new($self, -1, "模型信息");
             $object_info_sizer = Wx::StaticBoxSizer->new($box, wxVERTICAL);
             $object_info_sizer->SetMinSize([350,-1]);
             my $grid_sizer = Wx::FlexGridSizer->new(3, 4, 5, 5);

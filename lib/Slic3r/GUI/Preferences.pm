@@ -2,6 +2,7 @@
 use Wx qw(:dialog :id :misc :sizer :systemsettings wxTheApp);
 use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
 use base 'Wx::Dialog';
+use utf8;
 
 sub new {
     my ($class, $parent) = @_;
